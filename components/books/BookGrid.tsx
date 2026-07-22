@@ -2,12 +2,11 @@
 
 import React, { useEffect, useRef } from 'react';
 import { LoadingQuotes } from './LoadingQuotes';
-import { BookCard } from './BookCard';
+import { BookCard3D } from '@/components/3d/BookCard3D';
 import { Button } from '@/components/ui/button';
 import { Search, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UnifiedBook } from '@/lib/api';
-import Link from 'next/link';
 import { useI18n } from '@/hooks/useI18n';
 
 interface BookGridProps {
@@ -78,7 +77,7 @@ export function BookGrid({
           onClick={onRetry}
           className="rounded-xl px-10 border-rose-200 text-rose-600"
         >
-          Reintentar
+          {t('common.retry')}
         </Button>
       </div>
     );
@@ -95,7 +94,7 @@ export function BookGrid({
             >
               {selectedCategory === 'Todos'
                 ? t('nav.library')
-                : `${t('nav.categories')}: ${selectedCategory}`}
+                : `${t('nav.categories')}: ${t(`topic.${selectedCategory}`)}`}
             </h2>
             <span
               suppressHydrationWarning
@@ -128,7 +127,7 @@ export function BookGrid({
                 }}
                 transition={{ duration: 0.4, ease: 'easeOut' }}
               >
-                <BookCard book={book} priority={index < 5} />
+                <BookCard3D book={book} priority={index < 5} />
               </motion.div>
             ))}
           </motion.div>
@@ -141,7 +140,7 @@ export function BookGrid({
                   <>
                     <Loader2 className="w-10 h-10 text-violet-600 animate-spin" />
                     <p className="text-sm font-medium text-[var(--muted)] animate-pulse">
-                      Descubriendo más tesoros...
+                      {lang === 'es' ? 'Descubriendo más tesoros...' : 'Discovering more treasures...'}
                     </p>
                   </>
                 ) : (
@@ -154,7 +153,9 @@ export function BookGrid({
               <div className="text-center space-y-2">
                 <div className="h-px w-20 bg-[var(--border)] mx-auto mb-6" />
                 <p className="text-sm font-serif italic text-[var(--muted)]">
-                  Has llegado al final de esta estantería.
+                  {lang === 'es'
+                    ? 'Has llegado al final de esta estantería.'
+                    : 'You have reached the end of this shelf.'}
                 </p>
               </div>
             )}
@@ -174,29 +175,20 @@ export function BookGrid({
           </div>
           <div className="space-y-3">
             <h3 className="text-3xl font-serif font-bold text-[var(--foreground)]">
-              Silencio en los Estantes
+              {lang === 'es' ? 'Silencio en los Estantes' : 'Silence on the Shelves'}
             </h3>
             <p className="text-[var(--foreground-sec)] leading-relaxed font-serif italic text-xl">
-              No encontramos coincidencias para esta búsqueda. Quizás el libro que buscas te
-              encontrará a ti de otra forma.
+              {t('common.no_results')}
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button
               variant="primary"
-              className="rounded-2xl px-8 h-12 bg-violet-600 hover:bg-violet-700 font-bold w-full sm:w-auto"
+              className="rounded-2xl px-8 h-12 bg-violet-600 hover:bg-violet-700 font-bold w-full sm:w-auto text-white"
               onClick={onClearSearch}
             >
-              Reiniciar Búsqueda
+              {t('common.clear')}
             </Button>
-            <Link href="/book/popular" className="w-full sm:w-auto">
-              <Button
-                variant="outline"
-                className="rounded-2xl px-8 h-12 border-[var(--border)] text-[var(--foreground)] font-bold w-full"
-              >
-                Ver Recomendaciones
-              </Button>
-            </Link>
           </div>
         </motion.div>
       )}

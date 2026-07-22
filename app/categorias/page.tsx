@@ -4,18 +4,20 @@ import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { CATEGORIES_DATA } from "@/lib/constants";
+import { useI18n } from "@/hooks/useI18n";
 
 export default function CategoriasPage() {
+  const { t } = useI18n();
+
   return (
     <div className="pt-32 pb-20 px-6 bg-[var(--background)] transition-colors">
       <div className="max-w-7xl mx-auto">
         <header className="mb-16 text-center">
           <h1 className="text-4xl md:text-6xl font-serif font-bold text-[var(--foreground)] mb-4">
-            Explorar por Temas
+            {t("categories.title")}
           </h1>
           <p className="text-[var(--muted)] text-lg max-w-2xl mx-auto italic font-serif">
-            &quot;La lectura es para la mente lo que el ejercicio es para el
-            cuerpo.&quot; — Joseph Addison
+            {t("categories.subtitle")}
           </p>
         </header>
 
@@ -38,10 +40,10 @@ export default function CategoriasPage() {
                   <cat.icon size={32} />
                 </div>
                 <h3 className="text-2xl font-serif font-bold text-[var(--foreground)] mb-2">
-                  {cat.name}
+                  {t(`topic.${cat.name}`)}
                 </h3>
                 <p className="text-[var(--muted)] font-medium">
-                  {cat.count} libros reales disponibles
+                  {cat.count} {t("categories.available")}
                 </p>
               </motion.div>
             </Link>

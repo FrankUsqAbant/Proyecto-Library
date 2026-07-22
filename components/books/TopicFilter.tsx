@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { TOPICS } from "@/lib/constants";
+import { useI18n } from "@/hooks/useI18n";
 
 interface TopicFilterProps {
   selectedCategory: string;
@@ -12,6 +13,8 @@ export function TopicFilter({
   selectedCategory,
   setSelectedCategory,
 }: TopicFilterProps) {
+  const { t } = useI18n();
+
   return (
     <div className="flex items-center space-x-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
       {TOPICS.map((topic) => (
@@ -25,7 +28,7 @@ export function TopicFilter({
               : "bg-[var(--background-sec)] border-[var(--border)] text-[var(--foreground-sec)] hover:border-violet-200 hover:text-violet-600 dark:hover:text-violet-400",
           )}
         >
-          {topic}
+          {t(`topic.${topic}`)}
         </button>
       ))}
     </div>

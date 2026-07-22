@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { BookCover } from '@/components/books/BookCover';
 import { RelatedBooksCarousel } from '@/components/carousel';
 import { UnifiedBook } from '@/lib/api';
+import { useI18n } from '@/hooks/useI18n';
 
 interface BookDetailClientProps {
   book: UnifiedBook;
@@ -16,15 +17,17 @@ interface BookDetailClientProps {
 
 export function BookDetailClient({ book }: BookDetailClientProps) {
   const router = useRouter();
+  const { t, lang } = useI18n();
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
 
-  const author = book.authors[0] || 'Autor desconocido';
+  const author = book.authors[0] || t('detail.unknown_author');
 
   const generateSummary = () => {
     if (book.description) return book.description;
 
-    // Fallback summary if description is missing
-    return `Esta obra clásica nos sumerge en una narrativa profunda y atemporal. Publicada originalmente en ${book.publishYear || 'épocas pasadas'}, el texto de ${author} es una pieza imprescindible de la literatura universal que puedes disfrutar ahora de forma gratuita y legal.`;
+    return lang === 'es'
+      ? `Esta obra clásica nos sumerge en una narrativa profunda y atemporal. Publicada originalmente en ${book.publishYear || 'épocas pasadas'}, el texto de ${author} es una pieza imprescindible de la literatura universal que puedes disfrutar ahora de forma gratuita.`
+      : `This classic work immerses us in a deep, timeless narrative. Originally published in ${book.publishYear || 'past eras'}, this text by ${author} is an essential piece of world literature available for you to enjoy for free.`;
   };
 
   return (
@@ -56,7 +59,7 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
             className="text-[var(--muted)] group-hover:-translate-x-1 transition-transform"
           />
           <span className="font-medium text-sm text-[var(--foreground-sec)] tracking-wide">
-            Volver a la biblioteca
+            {t('detail.back')}
           </span>
         </motion.button>
 
@@ -86,14 +89,14 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
               className="mt-10 flex flex-wrap gap-3 justify-center lg:justify-start"
             >
               <div className="px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--background-sec)] text-xs font-bold tracking-widest uppercase text-[var(--muted)]">
-                DOMINIO PÚBLICO
+                {lang === 'es' ? 'DOMINIO PÚBLICO' : 'PUBLIC DOMAIN'}
               </div>
               <div className="px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--background-sec)] text-xs font-bold tracking-widest uppercase text-[var(--muted)] truncate max-w-[150px]">
                 {book.id}
               </div>
               {book.publishYear && (
                 <div className="px-4 py-2 rounded-full border border-[var(--border)] bg-[var(--background-sec)] text-xs font-bold tracking-widest uppercase text-[var(--muted)]">
-                  Año {book.publishYear}
+                  {lang === 'es' ? `Año ${book.publishYear}` : `Year ${book.publishYear}`}
                 </div>
               )}
             </motion.div>
@@ -146,7 +149,7 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
                   onClick={() => setDownloadMenuOpen(!downloadMenuOpen)}
                 >
                   <Download size={24} className="mr-3" />
-                  Descargar Libro
+                  {t('detail.download')}
                 </Button>
 
                 <AnimatePresence>
@@ -158,7 +161,7 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
                       className="absolute top-full left-0 mt-4 w-64 bg-[var(--card)] rounded-2xl shadow-2xl border border-[var(--border)] p-2 overflow-hidden"
                     >
                       <div className="px-3 py-3 text-[10px] font-black uppercase text-[var(--muted)] tracking-widest border-b border-[var(--border)] mb-1 bg-[var(--background-sec)] rounded-t-lg">
-                        Formatos Disponibles
+                        {t('detail.formats')}
                       </div>
                       <div className="max-h-60 overflow-y-auto p-1 space-y-1">
                         {book.downloadFormats ? (
@@ -184,7 +187,7 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
                                 rel="noopener noreferrer"
                                 className="flex items-center justify-between px-3 py-3 rounded-lg text-xs font-bold text-[var(--foreground)] hover:bg-[var(--hover)] hover:text-[var(--accent)] transition-all group"
                               >
-                                <span>PDF (Documento)</span>
+                                <span>PDF (Document)</span>
                                 <Download
                                   size={14}
                                   className="opacity-0 group-hover:opacity-100 transition-opacity"
@@ -208,8 +211,9 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
                           </>
                         ) : (
                           <div className="px-3 py-4 text-xs text-[var(--muted)] text-center italic">
-                            No hay descargas directas para esta edición de Open Library.
-                            <p className="mt-2 opacity-60">Prueba con otro título clásico.</p>
+                            {lang === 'es'
+                              ? 'No hay descargas directas para esta edición.'
+                              : 'No direct downloads for this edition.'}
                           </div>
                         )}
                       </div>
@@ -230,7 +234,7 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
                         url: window.location.href,
                       });
                   }}
-                  title="Compartir"
+                  title={t('detail.share')}
                 >
                   <Share2 size={20} />
                 </Button>

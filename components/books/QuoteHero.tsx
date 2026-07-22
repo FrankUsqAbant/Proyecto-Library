@@ -43,7 +43,7 @@ export function QuoteHero() {
                   {t("hero.author")}
                 </span>
                 <span className="text-[10px] uppercase tracking-widest text-[var(--muted)] font-bold mt-1">
-                  Autor
+                  {t("hero.author_label")}
                 </span>
               </div>
               <div className="h-px w-12 bg-gradient-to-l from-transparent to-[var(--border)]" />

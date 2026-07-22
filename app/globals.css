@@ -39,14 +39,38 @@ h4,
   font-weight: 500; /* Ensure it's not too thin */
 }
 
-/* Global Transitions for smooth UX */
+/* Global Transitions for smooth UX (Dark/Light mode switch) */
+@layer base {
+  html,
+  body,
+  div,
+  header,
+  footer,
+  section,
+  nav,
+  article,
+  main,
+  aside,
+  p,
+  span,
+  button,
+  input,
+  a,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  svg {
+    transition-property: background-color, color, border-color, fill, stroke, box-shadow;
+    transition-duration: 450ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
 * {
   border-color: var(--border);
-  transition:
-    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass {

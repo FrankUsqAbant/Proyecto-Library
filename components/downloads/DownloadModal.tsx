@@ -123,7 +123,7 @@ export function DownloadModal({ isOpen, onClose, bookData }: DownloadModalProps)
             <div className="p-8 pb-4 flex justify-between items-start">
               <div className="space-y-1">
                 <h3 className="text-[9px] uppercase tracking-[0.4em] text-violet-600 dark:text-violet-400 font-black">
-                  Reading is Think
+                  {appLang === 'es' ? 'Leer es Pensar' : 'Read to Think'}
                 </h3>
                 <h2 className="text-2xl font-serif font-bold text-[var(--foreground)] line-clamp-1">
                   {bookData.title}
@@ -147,7 +147,7 @@ export function DownloadModal({ isOpen, onClose, bookData }: DownloadModalProps)
               {/* Format Selector */}
               <div className="space-y-4">
                 <label className="text-sm font-semibold text-[var(--foreground)] opacity-70 uppercase tracking-widest px-1">
-                  Formato de archivo
+                  {appLang === 'es' ? 'Formato de archivo' : 'File Format'}
                 </label>
                 <div className="flex flex-wrap gap-2">
                   {formats.map((f) => {
