@@ -1,0 +1,11 @@
+
+> libro-zen@0.1.0 lint
+> eslint . --ext .ts,.tsx
+
+
+C:\Library\REVISAR\Proyecto Library\test-api.js
+  2:48  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:16  warning  'runTest' is defined but never used      @typescript-eslint/no-unused-vars
+
+Γ£û 2 problems (1 error, 1 warning)
+
