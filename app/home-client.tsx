@@ -9,6 +9,8 @@ import { BookGrid } from '@/components/books/BookGrid';
 import { QuoteHero } from '@/components/books/QuoteHero';
 import { BookSearch } from '@/components/books/BookSearch';
 import { UnifiedBook, searchUnifiedBooks, getCuratedBooks } from '@/lib/api';
+import { Ambient3DGlow } from '@/components/3d/Ambient3DGlow';
+import { BookShelf3D } from '@/components/3d/BookShelf3D';
 
 interface HomeClientProps {
   initialBooks: UnifiedBook[];
@@ -125,10 +127,15 @@ export function HomeClient({ initialBooks, initialCount }: HomeClientProps) {
   }
 
   return (
-    <div className="pt-32 pb-20 px-6 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <section className="mb-20">
+    <div className="pt-32 pb-20 px-6 min-h-screen relative">
+      <Ambient3DGlow />
+      <div className="max-w-7xl mx-auto relative z-10">
+        <section className="mb-12">
           <QuoteHero />
+        </section>
+
+        <section className="mb-12">
+          <BookShelf3D books={books} />
         </section>
 
         <div id="biblioteca" className="space-y-12">
