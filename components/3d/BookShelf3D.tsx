@@ -12,7 +12,7 @@ interface BookShelf3DProps {
 }
 
 export function BookShelf3D({ books }: BookShelf3DProps) {
-  const { t, lang } = useI18n();
+  const { lang } = useI18n();
   const showcaseBooks = books.slice(0, 5);
 
   return (

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { Search, Menu, X, Moon, Sun, Languages, Mic, MicOff, ArrowRight, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -12,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '@/lib/constants';
 import { searchUnifiedBooks, UnifiedBook } from '@/lib/api';
 import { BookCover } from '../books/BookCover';
-import logoImg from '@/public/branding/logo-v4.png';
+import { Logo3D } from '@/components/ui/Logo3D';
 
 // --- Speech Recognition Types ---
 interface ISpeechRecognitionEvent extends Event {
@@ -178,23 +177,10 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link
           href="/"
-          className="group relative flex items-center space-x-3"
+          className="group relative flex items-center space-x-3.5"
           onClick={handleLogoClick}
         >
-          <div
-            suppressHydrationWarning
-            className="relative w-10 h-10 overflow-hidden rounded-full bg-[#18181b] border border-stone-800 flex items-center justify-center shadow-lg group-hover:shadow-violet-500/20 transition-all duration-500 group-hover:scale-105"
-          >
-            <Image
-              src={logoImg}
-              alt="Logo de Leer es Pensar"
-              width={40}
-              height={40}
-              priority
-              className="object-contain p-1"
-            />
-            <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/0 via-white/10 to-violet-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-          </div>
+          <Logo3D size="md" />
           <span
             suppressHydrationWarning
             className="text-2xl font-serif font-bold tracking-tight text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors"

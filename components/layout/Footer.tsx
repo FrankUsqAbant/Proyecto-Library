@@ -2,14 +2,13 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { NAV_LINKS, SOCIAL_LINKS } from '@/lib/constants';
 import { Heart } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { StudyBear } from '@/components/ui/StudyBear';
 import { motion } from 'framer-motion';
 import { useI18n } from '@/hooks/useI18n';
-import logoImg from '@/public/branding/logo-v4.png';
+import { Logo3D } from '@/components/ui/Logo3D';
 
 export function Footer() {
   const pathname = usePathname();
@@ -47,18 +46,7 @@ export function Footer() {
               className="flex items-center space-x-4 group w-fit"
               onClick={handleLogoClick}
             >
-              <div
-                suppressHydrationWarning
-                className="relative w-12 h-12 overflow-hidden rounded-[18px] bg-stone-950 border border-stone-800 flex items-center justify-center shadow-2xl group-hover:scale-105 transition-all duration-500"
-              >
-                <Image
-                  src={logoImg}
-                  alt="Logo"
-                  width={40}
-                  height={40}
-                  className="object-contain p-1.5"
-                />
-              </div>
+              <Logo3D size="lg" />
               <div className="flex flex-col">
                 <span
                   suppressHydrationWarning
