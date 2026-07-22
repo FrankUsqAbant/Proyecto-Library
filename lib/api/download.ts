@@ -71,6 +71,8 @@ class DownloadAPI {
    * Verificar límites de descarga (Rate Limiting Simple)
    */
   static checkRateLimit(): boolean {
+    if (typeof window === 'undefined') return true;
+
     const storageKey = 'last_downloads_timestamps';
     const now = Date.now();
     const oneMinuteAgo = now - 60000;
