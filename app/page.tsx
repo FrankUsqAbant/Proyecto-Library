@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 import { HomeClient } from './home-client';
 import { getCuratedBooks } from '@/lib/api';
 
-// Force dynamic rendering to avoid SSR issues with external API
-export const dynamic = 'force-dynamic';
+// Force static rendering for static exports
+export const dynamic = 'force-static';
 
 function HomeContent() {
   const initialBooks = getCuratedBooks();

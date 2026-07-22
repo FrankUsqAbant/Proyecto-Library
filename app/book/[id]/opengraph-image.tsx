@@ -1,10 +1,16 @@
 import { ImageResponse } from "next/og";
-import { fetchBookById } from "@/lib/api";
+import { fetchBookById, ESSENTIAL_BOOKS } from "@/lib/api";
 
-export const runtime = "edge";
+export const dynamic = "force-static";
 export const alt = "Leer es Pensar | Biblioteca Digital Zen";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
+
+export async function generateStaticParams() {
+  return ESSENTIAL_BOOKS.map((book) => ({
+    id: encodeURIComponent(book.id),
+  }));
+}
 
 export default async function Image({ params }: { params: { id: string } }) {
   const { id } = await params;

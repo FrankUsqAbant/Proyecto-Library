@@ -111,7 +111,7 @@ export async function fetchWithCache<T>(url: string): Promise<T> {
   try {
     const response = await fetch(url, {
       signal: controller.signal,
-      cache: 'no-store',
+      next: { revalidate: 3600 },
       headers: { Accept: 'application/json' },
     });
 

@@ -1,11 +1,17 @@
 import { Metadata } from 'next';
-import { getUnifiedBook } from '@/lib/api';
+import { getUnifiedBook, ESSENTIAL_BOOKS } from '@/lib/api';
 import { BookDetailClient } from './BookDetailClient';
 import { BookJsonLd } from '@/components/seo/BookJsonLd';
 
 interface Props {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export async function generateStaticParams() {
+  return ESSENTIAL_BOOKS.map((book) => ({
+    id: encodeURIComponent(book.id),
+  }));
 }
 
 export async function generateMetadata({
