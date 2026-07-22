@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '@/lib/constants';
 import { searchUnifiedBooks, UnifiedBook } from '@/lib/api';
 import { BookCover } from '../books/BookCover';
+import logoImg from '@/public/branding/logo-v4.png';
 
 // --- Speech Recognition Types ---
 interface ISpeechRecognitionEvent extends Event {
@@ -185,7 +186,7 @@ export function Navbar() {
             className="relative w-10 h-10 overflow-hidden rounded-full bg-[#18181b] border border-stone-800 flex items-center justify-center shadow-lg group-hover:shadow-violet-500/20 transition-all duration-500 group-hover:scale-105"
           >
             <Image
-              src="/branding/logo-v4.png"
+              src={logoImg}
               alt="Logo de Leer es Pensar"
               width={40}
               height={40}
@@ -198,8 +199,8 @@ export function Navbar() {
             suppressHydrationWarning
             className="text-2xl font-serif font-bold tracking-tight text-[var(--foreground)] group-hover:text-[var(--accent)] transition-colors"
           >
-            {lang === 'es' ? 'Leer es ' : 'Read to '}
-            <span className="text-[var(--accent)]">{lang === 'es' ? 'Pensar' : 'Think'}</span>
+            {t('nav.brand_first')}
+            <span className="text-[var(--accent)]">{t('nav.brand_second')}</span>
           </span>
         </Link>
 

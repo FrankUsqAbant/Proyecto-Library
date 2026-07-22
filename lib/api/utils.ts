@@ -23,12 +23,12 @@ export async function findGutendexByTitle(
     const searchQuery = author ? `${title} ${author}` : title;
     const response = await fetchBooks(searchQuery);
 
-    if (response.results && response.results.length > 0) {
-      const normalizedQuery = title.toLowerCase().trim();
+    if (response?.results && response.results.length > 0) {
+      const normalizedQuery = (title || '').toLowerCase().trim();
       return (
         response.results.find((book: GutendexBook) => {
-          const bookTitle = book.title.toLowerCase().trim();
-          return bookTitle.includes(normalizedQuery) || normalizedQuery.includes(bookTitle);
+          const bookTitle = (book.title || '').toLowerCase().trim();
+          return bookTitle && (bookTitle.includes(normalizedQuery) || normalizedQuery.includes(bookTitle));
         }) || response.results[0]
       );
     }
@@ -70,5 +70,25 @@ export async function createUnifiedFromOL(doc: OpenLibraryDoc): Promise<UnifiedB
     downloadFormats: undefined,
     source: 'openlibrary',
   };
+}
+
+/**
+ * Normalizes a book ID to a clean URL slug (e.g. '/works/OL45804W' -> 'OL45804W').
+ */
+export function getBookSlug(id: string): string {
+  if (!id) return '';
+  return id.replace(/^\/works\//, '').replace(/^\/books\//, '');
+}
+
+/**
+ * Resolves a book slug back to its canonical API ID if needed.
+ */
+export function resolveBookId(slug: string): string {
+  if (!slug) return '';
+  const clean = decodeURIComponent(slug).trim();
+  if (clean.startsWith('OL') && !clean.startsWith('/works/')) {
+    return `/works/${clean}`;
+  }
+  return clean;
 }
 

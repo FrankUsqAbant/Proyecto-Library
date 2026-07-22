@@ -9,10 +9,11 @@ import { usePathname } from 'next/navigation';
 import { StudyBear } from '@/components/ui/StudyBear';
 import { motion } from 'framer-motion';
 import { useI18n } from '@/hooks/useI18n';
+import logoImg from '@/public/branding/logo-v4.png';
 
 export function Footer() {
   const pathname = usePathname();
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -30,7 +31,6 @@ export function Footer() {
       {/* --- PREMIUM BACKGROUND ORCHESTRATION --- */}
       <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-violet-500/10 blur-[100px] rounded-full pointer-events-none -translate-y-1/2 opacity-60 animate-pulse" />
       <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-orange-500/5 blur-[80px] rounded-full pointer-events-none translate-y-1/2 opacity-40" />
-      <div className="absolute inset-0 bg-[url('/patterns/noise.png')] opacity-[0.03] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         <motion.div
@@ -52,7 +52,7 @@ export function Footer() {
                 className="relative w-12 h-12 overflow-hidden rounded-[18px] bg-stone-950 border border-stone-800 flex items-center justify-center shadow-2xl group-hover:scale-105 transition-all duration-500"
               >
                 <Image
-                  src="/branding/logo-v4.png"
+                  src={logoImg}
                   alt="Logo"
                   width={40}
                   height={40}
@@ -64,14 +64,14 @@ export function Footer() {
                   suppressHydrationWarning
                   className="text-xl font-serif font-bold text-[var(--foreground)] tracking-tight leading-none"
                 >
-                  {lang === 'es' ? 'Leer es ' : 'Read to '}
-                  <span className="text-[var(--accent)]">{lang === 'es' ? 'Pensar' : 'Think'}</span>
+                  {t('nav.brand_first')}
+                  <span className="text-[var(--accent)]">{t('nav.brand_second')}</span>
                 </span>
                 <span
                   suppressHydrationWarning
                   className="text-[9px] uppercase tracking-[0.4em] text-[var(--muted)] font-black mt-1.5 opacity-60"
                 >
-                  Est. 2025 • {lang === 'es' ? 'Biblioteca Digital' : 'Digital Library'}
+                  {t('nav.tagline')}
                 </span>
               </div>
             </Link>
@@ -101,7 +101,7 @@ export function Footer() {
           {/* --- SECTION 2: NAVIGATION --- */}
           <div className="lg:col-span-2 lg:pl-6 pt-4">
             <h4 className="font-black text-[var(--foreground)] mb-6 uppercase tracking-[0.4em] text-[10px] opacity-30">
-              {lang === 'es' ? 'Mapa' : 'Map'}
+              {t('footer.map')}
             </h4>
             <ul className="space-y-4">
               {NAV_LINKS.map((item) => (
@@ -111,7 +111,7 @@ export function Footer() {
                     className="text-[var(--muted)] hover:text-[var(--foreground)] transition-all text-sm font-bold flex items-center group"
                   >
                     <span className="w-1.5 h-[1.5px] bg-[var(--accent)] mr-0 opacity-0 group-hover:mr-2 group-hover:opacity-100 transition-all duration-300 rounded-full" />
-                    {item.label}
+                    {item.label === 'Inicio' ? t('nav.library') : item.label}
                   </Link>
                 </li>
               ))}
@@ -127,24 +127,22 @@ export function Footer() {
           <div className="lg:col-span-4 flex flex-col justify-end">
             <div className="p-8 rounded-[40px] bg-[var(--background-sec)] border border-[var(--border)] backdrop-blur-xl shadow-sm">
               <h4 className="font-black text-[var(--foreground)] mb-4 uppercase tracking-[0.4em] text-[9px] opacity-40">
-                Newsletter Zen
+                {t('footer.newsletter_title')}
               </h4>
               <p
                 suppressHydrationWarning
                 className="text-sm text-[var(--muted)] leading-relaxed mb-6 font-serif italic"
               >
-                {lang === 'es'
-                  ? 'Únete y recibe un clásico cada semana.'
-                  : 'Join and receive a classic every week.'}
+                {t('footer.newsletter_sub')}
               </p>
               <div className="flex flex-col space-y-3">
                 <input
                   type="email"
-                  placeholder="Email..."
+                  placeholder={t('footer.email_placeholder')}
                   className="w-full bg-[var(--background)] border border-[var(--border)] rounded-xl py-3 px-4 text-xs outline-none focus:ring-2 focus:ring-violet-500/20 transition-all text-[var(--foreground)]"
                 />
                 <button className="w-full py-3 bg-[var(--foreground)] text-[var(--background)] rounded-xl text-[9px] font-black uppercase tracking-[0.2em] hover:bg-[var(--accent)] hover:text-white transition-all duration-300">
-                  {lang === 'es' ? 'Unirse' : 'Join'}
+                  {t('footer.join')}
                 </button>
               </div>
             </div>
@@ -162,20 +160,20 @@ export function Footer() {
                 href="#"
                 className="hover:text-[var(--accent)] transition-all opacity-40 hover:opacity-100"
               >
-                {lang === 'es' ? 'Privacidad' : 'Privacy'}
+                {t('footer.privacy')}
               </Link>
               <Link
                 href="#"
                 className="hover:text-[var(--accent)] transition-all opacity-40 hover:opacity-100"
               >
-                {lang === 'es' ? 'Términos' : 'Terms'}
+                {t('footer.terms')}
               </Link>
             </div>
           </div>
 
           <div className="flex items-center space-x-6">
             <div className="hidden md:flex items-center space-x-2 text-[9px] font-black uppercase tracking-[0.2em] text-[var(--muted)] opacity-60">
-              <span>Hecho por Frank Abanto</span>
+              <span>{t('footer.made_by')}</span>
               <Heart size={12} className="text-rose-500 fill-current" />
             </div>
             <button

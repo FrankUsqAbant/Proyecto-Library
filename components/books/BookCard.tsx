@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { TrendingUp, Download } from 'lucide-react';
-import { UnifiedBook } from '@/lib/api';
+import { UnifiedBook, getBookSlug } from '@/lib/api';
 import { BookCover } from './BookCover';
 import { useI18n } from '@/hooks/useI18n';
 
@@ -26,6 +26,8 @@ export const BookCard = React.memo(function BookCard({ book, priority = false }:
     setIsDownloadOpen(true);
   };
 
+  const bookSlug = getBookSlug(book.id);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -35,7 +37,7 @@ export const BookCard = React.memo(function BookCard({ book, priority = false }:
       className="h-full"
     >
       <Link
-        href={`/book/${book.id}`}
+        href={`/book/${bookSlug}`}
         aria-label={`Ver detalles de ${book.title}`}
         className="group relative flex flex-col h-full bg-[var(--background-sec)] border border-[var(--border)] rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]"
       >

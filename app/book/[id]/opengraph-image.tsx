@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { fetchBookById, ESSENTIAL_BOOKS } from "@/lib/api";
+import { fetchBookById, ESSENTIAL_BOOKS, getBookSlug } from "@/lib/api";
 
 export const dynamic = "force-static";
 export const alt = "Leer es Pensar | Biblioteca Digital Zen";
@@ -7,9 +7,13 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export async function generateStaticParams() {
-  return ESSENTIAL_BOOKS.map((book) => ({
-    id: encodeURIComponent(book.id),
-  }));
+  const list: { id: string }[] = [];
+  ESSENTIAL_BOOKS.forEach((book) => {
+    const slug = getBookSlug(book.id);
+    list.push({ id: slug });
+    list.push({ id: encodeURIComponent(book.id) });
+  });
+  return list;
 }
 
 export default async function Image({ params }: { params: { id: string } }) {

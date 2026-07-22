@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { searchUnifiedBooks, UnifiedBook, getUnifiedBook } from '@/lib/api';
+import { searchUnifiedBooks, UnifiedBook, getUnifiedBook, getBookSlug } from '@/lib/api';
 import { BookCover } from './BookCover';
 import Link from 'next/link';
 import { useI18n } from '@/hooks/useI18n';
@@ -127,10 +127,10 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
     <div className="relative flex flex-col space-y-6 w-full" ref={containerRef}>
       <div className="space-y-2">
         <h3 className="text-xl md:text-2xl font-serif font-bold text-[var(--foreground)]">
-          Busca cualquier clásico para descargar
+          {t('home.title')}
         </h3>
         <p className="text-[var(--muted)] text-sm md:text-base italic">
-          Nuestra biblioteca se conecta con miles de obras universales de dominio público.
+          {t('home.subtitle')}
         </p>
       </div>
 
@@ -144,7 +144,7 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
             size={20}
           />
           <Input
-            placeholder="Escribe el título de tu próximo libro favorito..."
+            placeholder={t('search.placeholder')}
             className="pl-12 pr-24 h-14 text-lg shadow-sm border-[var(--border)] bg-[var(--background-sec)] text-[var(--foreground)] rounded-xl focus:ring-2 focus:ring-violet-500 transition-all backdrop-blur-sm placeholder:text-[var(--muted)]"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -195,7 +195,7 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
                 {isLoading ? (
                   <div className="p-4 flex items-center justify-center space-x-2 text-[var(--muted)] relative">
                     <div className="w-4 h-4 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-sm font-medium italic">Buscando ideas...</span>
+                    <span className="text-sm font-medium italic">Buscando...</span>
                   </div>
                 ) : (
                   <div className="p-2">
@@ -205,7 +205,7 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
                     {suggestions.map((book) => (
                       <Link
                         key={book.id}
-                        href={`/book/${encodeURIComponent(book.id)}`}
+                        href={`/book/${getBookSlug(book.id)}`}
                         className="flex items-center space-x-4 p-3 hover:bg-[var(--hover)] rounded-xl transition-all group"
                         onClick={() => setShowSuggestions(false)}
                         onMouseEnter={() => {
@@ -255,7 +255,7 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
             setShowSuggestions(false);
           }}
         >
-          <span>Buscar</span>
+          <span>{t('home.search_btn')}</span>
         </Button>
       </div>
     </div>

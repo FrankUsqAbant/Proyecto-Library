@@ -83,8 +83,9 @@ export async function searchUnifiedBooks(
 /**
  * Detailed book fetch with hybrid download discovery and WebP cover optimization.
  */
-export async function getUnifiedBook(key: string): Promise<UnifiedBook | null> {
-  const curated = ESSENTIAL_BOOKS.find((b) => b.id === key);
+export async function getUnifiedBook(rawKey: string): Promise<UnifiedBook | null> {
+  const key = rawKey.startsWith('/') ? rawKey : (rawKey.startsWith('OL') ? `/works/${rawKey}` : `/${rawKey}`);
+  const curated = ESSENTIAL_BOOKS.find((b) => b.id === key || b.id === rawKey || b.id.replace(/^\/works\//, '') === rawKey);
   if (curated) {
     return {
       ...curated,

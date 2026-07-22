@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getUnifiedBook, ESSENTIAL_BOOKS } from '@/lib/api';
+import { getUnifiedBook, ESSENTIAL_BOOKS, getBookSlug } from '@/lib/api';
 import { BookDetailClient } from './BookDetailClient';
 import { BookJsonLd } from '@/components/seo/BookJsonLd';
 
@@ -9,9 +9,13 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return ESSENTIAL_BOOKS.map((book) => ({
-    id: encodeURIComponent(book.id),
-  }));
+  const list: { id: string }[] = [];
+  ESSENTIAL_BOOKS.forEach((book) => {
+    const slug = getBookSlug(book.id);
+    list.push({ id: slug });
+    list.push({ id: encodeURIComponent(book.id) });
+  });
+  return list;
 }
 
 export async function generateMetadata({
