@@ -12,9 +12,7 @@ const customJestConfig = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
-  transformIgnorePatterns: [
-    '/node_modules/(?!(@exodus/bytes|isomorphic-dompurify|dompurify)/)',
-  ],
+  transformIgnorePatterns: ['/node_modules/(?!(@exodus/bytes|isomorphic-dompurify|dompurify)/)'],
 };
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

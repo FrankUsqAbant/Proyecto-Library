@@ -1,6 +1,6 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-@import "../styles/variables.css";
+@import '../styles/variables.css';
 
 /* 
   DESIGN SYSTEM: Zen Minimalist
@@ -155,11 +155,7 @@ h4,
 }
 
 .text-gradient-accent {
-  background: linear-gradient(
-    135deg,
-    var(--accent) 0%,
-    #a855f7 100% /* Purple-500 */
-  );
+  background: linear-gradient(135deg, var(--accent) 0%, #a855f7 100% /* Purple-500 */);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -176,13 +172,7 @@ h4,
 }
 
 .mask-gradient-sides {
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 5%,
-    black 95%,
-    transparent 100%
-  );
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,

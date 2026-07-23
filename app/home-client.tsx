@@ -8,9 +8,9 @@ import { TopicFilter } from '@/components/books/TopicFilter';
 import { BookGrid } from '@/components/books/BookGrid';
 import { QuoteHero } from '@/components/books/QuoteHero';
 import { BookSearch } from '@/components/books/BookSearch';
-import { UnifiedBook, searchUnifiedBooks, getCuratedBooks } from '@/lib/api';
-import { Ambient3DGlow } from '@/components/3d/Ambient3DGlow';
+import { UnifiedBook, searchUnifiedBooks, getCuratedBooks, searchLocalBooks } from '@/lib/api';
 import { BookShelf3D } from '@/components/3d/BookShelf3D';
+import { useI18n } from '@/hooks/useI18n';
 
 interface HomeClientProps {
   initialBooks: UnifiedBook[];
@@ -19,11 +19,10 @@ interface HomeClientProps {
 
 export function HomeClient({ initialBooks, initialCount }: HomeClientProps) {
   const searchParams = useSearchParams();
-  const initialCategory = searchParams.get('category') || 'Todos';
-  const urlSearch = searchParams.get('search') || '';
+  const { lang, setLang, t } = useI18n();
 
-  const [searchTerm, setSearchTerm] = useState(urlSearch);
-  const [selectedCategory, setSelectedCategory] = useState(initialCategory);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [selectedLanguage, setSelectedLanguage] = useState<'all' | 'es' | 'en'>('all');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -45,9 +44,10 @@ export function HomeClient({ initialBooks, initialCount }: HomeClientProps) {
       currentLang: 'all' | 'es' | 'en' = selectedLanguage,
       append: boolean = false
     ) => {
-      if (!currentSearch && currentCat === 'Todos' && currentLang === 'all') {
-        setBooks(getCuratedBooks());
-        setTotalCount(getCuratedBooks().length);
+      if (!currentSearch && currentCat === 'Todos') {
+        const curated = getCuratedBooks(currentLang);
+        setBooks(curated);
+        setTotalCount(curated.length);
         setCurrentPage(1);
         setLoading(false);
         setError(null);
@@ -57,24 +57,58 @@ export function HomeClient({ initialBooks, initialCount }: HomeClientProps) {
       setLoading(true);
       setError(null);
 
-      try {
-        let query = currentSearch;
-        if (currentCat && currentCat !== 'Todos') {
-          query = query ? `${query} subject:${currentCat}` : `subject:${currentCat}`;
-        }
+      let query = currentSearch;
+      if (currentCat && currentCat !== 'Todos') {
+        query = query ? `${query} subject:${currentCat}` : `subject:${currentCat}`;
+      }
 
+      // Fast Local Search (0ms response) for page 1 new searches
+      if (page === 1 && !append && query) {
+        const localMatches = searchLocalBooks(query, currentLang);
+        if (localMatches.length > 0) {
+          setBooks(localMatches);
+          setTotalCount(localMatches.length);
+        }
+      }
+
+      try {
         const results = await searchUnifiedBooks(query, 15, page, currentLang);
 
+        const isMock = results.length > 0 && results[0].source === 'mock';
+
         if (append) {
-          setBooks((prev) => [...prev, ...results]);
+          if (isMock) {
+            // If we fall back to mock on page 2+, don't append duplicates, just freeze pagination
+            setTotalCount(books.length);
+          } else {
+            setBooks((prev) => [...prev, ...results]);
+            setTotalCount((prev) => prev + results.length);
+          }
         } else {
-          setBooks(results);
+          // If the API call returned mock books (fallback), but we already have local matches showing,
+          // keep the local matches instead of showing all unrelated mock books!
+          if (isMock && query) {
+            const localMatches = searchLocalBooks(query, currentLang);
+            if (localMatches.length > 0) {
+              setBooks(localMatches);
+              setTotalCount(localMatches.length);
+            } else {
+              setBooks(results);
+              setTotalCount(results.length);
+            }
+          } else {
+            setBooks(results);
+            if (isMock) {
+              setTotalCount(results.length);
+            } else {
+              setTotalCount(1000); // Allow scrolling if it is a real API response
+            }
+          }
           if (page === 1) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         }
 
-        setTotalCount(append ? (prev) => prev + results.length : 1000); // Hack to allow more loads if not calculated
         setCurrentPage(page);
       } catch (err) {
         console.error('Error searching books:', err);
@@ -94,41 +128,25 @@ export function HomeClient({ initialBooks, initialCount }: HomeClientProps) {
 
   useEffect(() => {
     if (!mounted) return;
+    setSelectedLanguage(lang);
+    handleSearch(1, searchTerm, selectedCategory, lang);
+  }, [lang, mounted]);
 
-    const urlSearch = searchParams?.get('search') || '';
-    const urlCat = searchParams?.get('category') || 'Todos';
+  useEffect(() => {
+    if (!mounted) return;
 
-    if (urlSearch !== searchTerm || urlCat !== selectedCategory) {
-      setSearchTerm(urlSearch);
-      setSelectedCategory(urlCat);
-      handleSearch(1, urlSearch, urlCat);
+    const currentUrlSearch = searchParams?.get('search') || '';
+    const currentUrlCat = searchParams?.get('category') || 'Todos';
+
+    if (currentUrlSearch !== searchTerm || currentUrlCat !== selectedCategory) {
+      setSearchTerm(currentUrlSearch);
+      setSelectedCategory(currentUrlCat);
+      handleSearch(1, currentUrlSearch, currentUrlCat);
     }
   }, [searchParams, mounted, handleSearch, searchTerm, selectedCategory]);
 
-  if (!mounted) {
-    return (
-      <div className="pt-32 pb-20 px-6 min-h-screen">
-        <div className="max-w-7xl mx-auto space-y-12">
-          <QuoteHero />
-          <div className="h-12 w-full max-w-2xl bg-stone-100 dark:bg-stone-900 rounded-full animate-pulse mb-8" />
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
-            {initialBooks && initialBooks.length > 0
-              ? initialBooks.map((book) => (
-                  <div
-                    key={book.id}
-                    className="h-[300px] bg-stone-100 dark:bg-stone-800 rounded-xl"
-                  />
-                ))
-              : Array.from({ length: 15 }).map((_, i) => <BookCardSkeleton key={i} />)}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="pt-32 pb-20 px-6 min-h-screen relative">
-      <Ambient3DGlow />
       <div className="max-w-7xl mx-auto relative z-10">
         <section className="mb-12">
           <QuoteHero />
@@ -165,8 +183,7 @@ export function HomeClient({ initialBooks, initialCount }: HomeClientProps) {
             </button>
             <button
               onClick={() => {
-                setSelectedLanguage('es');
-                handleSearch(1, searchTerm, selectedCategory, 'es');
+                setLang('es');
               }}
               className={cn(
                 'px-4 py-1.5 rounded-full text-xs font-bold transition-all border',
@@ -179,8 +196,7 @@ export function HomeClient({ initialBooks, initialCount }: HomeClientProps) {
             </button>
             <button
               onClick={() => {
-                setSelectedLanguage('en');
-                handleSearch(1, searchTerm, selectedCategory, 'en');
+                setLang('en');
               }}
               className={cn(
                 'px-4 py-1.5 rounded-full text-xs font-bold transition-all border',
@@ -205,8 +221,12 @@ export function HomeClient({ initialBooks, initialCount }: HomeClientProps) {
               books={books}
               totalCount={totalCount}
               selectedCategory={selectedCategory}
-              onLoadMore={() => handleSearch(currentPage + 1, searchTerm, selectedCategory, selectedLanguage, true)}
-              onRetry={() => handleSearch(currentPage, searchTerm, selectedCategory, selectedLanguage)}
+              onLoadMore={() =>
+                handleSearch(currentPage + 1, searchTerm, selectedCategory, selectedLanguage, true)
+              }
+              onRetry={() =>
+                handleSearch(currentPage, searchTerm, selectedCategory, selectedLanguage)
+              }
               onClearSearch={() => {
                 setSearchTerm('');
                 setSelectedCategory('Todos');

@@ -2,13 +2,14 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, Download, Share2 } from 'lucide-react';
+import { ChevronLeft, Download, Share2, Heart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { BookCover } from '@/components/books/BookCover';
-import { RelatedBooksCarousel } from '@/components/carousel';
 import { UnifiedBook } from '@/lib/api';
 import { useI18n } from '@/hooks/useI18n';
+import { addFavorite, removeFavorite, isFavorite } from '@/lib/db/turso';
+import { useEffect } from 'react';
 
 interface BookDetailClientProps {
   book: UnifiedBook;
@@ -19,6 +20,26 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
   const router = useRouter();
   const { t, lang } = useI18n();
   const [downloadMenuOpen, setDownloadMenuOpen] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+
+  useEffect(() => {
+    async function checkFav() {
+      const fav = await isFavorite(book.id);
+      setFavorite(fav);
+    }
+    checkFav();
+  }, [book.id]);
+
+  const handleFavoriteToggle = async () => {
+    if (favorite) {
+      const success = await removeFavorite(book.id);
+      if (success) setFavorite(false);
+    } else {
+      const authorsStr = book.authors.join(', ') || 'Desconocido';
+      const success = await addFavorite(book.id, book.title, authorsStr, book.coverImage || '');
+      if (success) setFavorite(true);
+    }
+  };
 
   const author = book.authors[0] || t('detail.unknown_author');
 
@@ -66,19 +87,51 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
         {/* --- MASTER LAYOUT: Magazine Style (Asymmetric Grid) --- */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-start">
           {/* LEFT: Cover Highlight (Cols 1-4) */}
-          <div className="lg:col-span-4 lg:sticky lg:top-40 flex flex-col">
+          <div className="lg:col-span-4 lg:sticky lg:top-40 flex flex-col items-center">
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 30 }}
+              initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.8, type: 'spring', bounce: 0.2 }}
-              className="relative group perspective-1000"
+              transition={{ duration: 0.8, type: 'spring', bounce: 0.15 }}
+              className="relative w-full max-w-[320px] aspect-[2/3] group cursor-pointer"
+              style={{ perspective: '1200px' }}
             >
-              <div className="absolute top-4 left-4 w-full h-full bg-[var(--background-sec)] rounded-[4px] -z-10 rotate-2 transition-transform group-hover:rotate-3" />
+              {/* Inner 3D Container */}
+              <div 
+                className="relative w-full h-full transition-transform duration-700 ease-out [transform-style:preserve-3d] group-hover:[transform:rotateY(-24deg)_rotateX(8deg)] shadow-xl dark:shadow-black/60 rounded-r-[4px]"
+              >
+                {/* Back Cover */}
+                <div 
+                  className="absolute inset-0 bg-stone-900 dark:bg-stone-950 rounded-r-[4px] [transform:translateZ(-12px)] shadow-[15px_20px_35px_rgba(0,0,0,0.4)] border-r border-stone-950" 
+                />
+                
+                {/* Pages (Right edge) */}
+                <div 
+                  className="absolute top-[3px] bottom-[3px] right-[-10px] w-[24px] bg-stone-100 dark:bg-stone-900 border-y border-r border-stone-200 dark:border-stone-800 [transform:rotateY(90deg)]"
+                  style={{
+                    backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)',
+                  }}
+                />
 
-              <div className="relative w-full aspect-[2/3] rounded-[4px] overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.25)] dark:shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] transition-shadow duration-500 group-hover:shadow-[0_35px_65px_-15px_rgba(0,0,0,0.3)]">
-                <BookCover title={book.title} coverImage={book.coverImage} priority />
-                <div className="absolute inset-0 bg-gradient-to-tr from-black/20 via-transparent to-white/20 pointer-events-none mix-blend-overlay" />
-                <div className="absolute top-0 bottom-0 left-0 w-8 bg-gradient-to-r from-black/30 to-transparent pointer-events-none z-20 opacity-80" />
+                {/* Spine (Left edge) */}
+                <div 
+                  className="absolute top-0 bottom-0 left-0 w-[24px] bg-stone-950 [transform:rotateY(-90deg)_translateZ(12px)] origin-left border-y border-stone-900" 
+                  style={{
+                    backgroundImage: 'linear-gradient(to right, rgba(0,0,0,0.5) 0%, rgba(255,255,255,0.05) 50%, rgba(0,0,0,0.5) 100%)',
+                  }}
+                />
+
+                {/* Front Cover */}
+                <div 
+                  className="absolute inset-0 rounded-r-[4px] overflow-hidden [transform:translateZ(12px)] [transform-style:preserve-3d]"
+                >
+                  <BookCover title={book.title} coverImage={book.coverImage} priority />
+                  <div className="absolute inset-0 bg-gradient-to-tr from-black/10 via-transparent to-white/15 pointer-events-none mix-blend-overlay" />
+                  
+                  {/* Spine shadow join */}
+                  <div className="absolute top-0 bottom-0 left-0 w-2 bg-gradient-to-r from-black/25 to-transparent pointer-events-none z-20" />
+                  {/* Glossy sheen */}
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/10 via-transparent to-white/5 pointer-events-none mix-blend-screen opacity-55" />
+                </div>
               </div>
             </motion.div>
 
@@ -238,12 +291,23 @@ export function BookDetailClient({ book }: BookDetailClientProps) {
                 >
                   <Share2 size={20} />
                 </Button>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-12 w-12 rounded-full hover:bg-[var(--background)] transition-all"
+                  onClick={handleFavoriteToggle}
+                  title={favorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+                >
+                  <Heart
+                    size={20}
+                    className={favorite ? 'fill-rose-500 text-rose-500 scale-110' : 'text-[var(--muted)] hover:text-rose-500'}
+                  />
+                </Button>
               </div>
             </motion.div>
           </div>
         </div>
-
-        <RelatedBooksCarousel currentBook={book} />
       </div>
     </div>
   );

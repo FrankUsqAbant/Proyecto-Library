@@ -14,7 +14,10 @@ interface BookCard3DProps {
   priority?: boolean;
 }
 
-export const BookCard3D = React.memo(function BookCard3D({ book, priority = false }: BookCard3DProps) {
+export const BookCard3D = React.memo(function BookCard3D({
+  book,
+  priority = false,
+}: BookCard3DProps) {
   const { lang } = useI18n();
   const [isDownloadOpen, setIsDownloadOpen] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -36,9 +39,9 @@ export const BookCard3D = React.memo(function BookCard3D({ book, priority = fals
     const mouseX = e.clientX - rect.left;
     const mouseY = e.clientY - rect.top;
 
-    // Calculate rotation (-15deg to 15deg)
-    const rY = ((mouseX - width / 2) / (width / 2)) * 14;
-    const rX = ((height / 2 - mouseY) / (height / 2)) * 14;
+    // Subtle, elegant rotation (-6deg to 6deg)
+    const rY = ((mouseX - width / 2) / (width / 2)) * 6;
+    const rX = ((height / 2 - mouseY) / (height / 2)) * 6;
 
     setRotateX(rX);
     setRotateY(rY);
@@ -46,7 +49,7 @@ export const BookCard3D = React.memo(function BookCard3D({ book, priority = fals
     // Glare position percentage
     const glareX = (mouseX / width) * 100;
     const glareY = (mouseY / height) * 100;
-    setGlarePos({ x: glareX, y: glareY, opacity: 0.25 });
+    setGlarePos({ x: glareX, y: glareY, opacity: 0.12 });
   };
 
   const handleMouseLeave = () => {
@@ -86,7 +89,7 @@ export const BookCard3D = React.memo(function BookCard3D({ book, priority = fals
             }}
           />
 
-          <Link href={`/book/${bookSlug}`} className="flex flex-col h-full">
+          <Link href={`/book?id=${bookSlug}`} className="flex flex-col h-full">
             {/* 3D Elevated Book Cover Container */}
             <div className="relative w-full aspect-[2/3] overflow-hidden bg-[var(--background-sec)] p-4 flex items-center justify-center">
               <div

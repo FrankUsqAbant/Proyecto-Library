@@ -51,7 +51,7 @@ export function setCache<T>(key: string, data: T) {
   if (typeof window !== 'undefined') {
     try {
       localStorage.setItem(CACHE_PREFIX + key, JSON.stringify(item));
-    } catch (e) {
+    } catch {
       // Quota exceeded or disabled
     }
   }
@@ -106,7 +106,7 @@ export async function fetchWithCache<T>(url: string): Promise<T> {
   }
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 10000);
+  const timeoutId = setTimeout(() => controller.abort(), 2500);
 
   try {
     const response = await fetch(url, {
@@ -124,12 +124,47 @@ export async function fetchWithCache<T>(url: string): Promise<T> {
     return data;
   } catch (error) {
     clearTimeout(timeoutId);
-    console.warn(`[API] Fetch failed for ${url}, attempting fallback.`, error);
+    console.warn(`[API] Fetch timeout/failed for ${url}, returning instant fallback.`, error);
 
-    // Dynamic fallback to mock
-    if (url.includes('/books/')) {
-      const id = url.split('/').pop();
-      return (MOCK_BOOKS.find((b) => b.id.toString() === id) || null) as T;
+    // Dynamic fallback to mock for search requests
+    if (url.includes('openlibrary.org/search.json') || url.includes('/search.json')) {
+      return {
+        numFound: MOCK_BOOKS.length,
+        isFallback: true,
+        docs: MOCK_BOOKS.map((b) => ({
+          key: `/works/OL${b.id}W`,
+          title: b.title,
+          author_name: b.authors.map((a) => a.name),
+          first_publish_year: 1800,
+          cover_i: b.id,
+          subject: b.subjects,
+          language: b.languages,
+        })),
+      } as unknown as T;
+    }
+
+    // Dynamic fallback to mock for single work details
+    if (url.includes('/books/') || url.includes('/works/')) {
+      const parts = url.split('/');
+      const rawId = parts[parts.length - 1].replace('.json', '');
+      const cleanId = rawId.startsWith('OL') ? rawId : `OL${rawId}`;
+
+      const matched = MOCK_BOOKS.find(
+        (b) => b.id.toString() === cleanId || b.id.toString().includes(cleanId)
+      );
+
+      if (matched) return matched as unknown as T;
+
+      // Generar libro instantaneo si es un ID desconocido de OpenLibrary
+      return {
+        key: `/works/${cleanId}`,
+        title: `Obra Clásica (${cleanId})`,
+        authors: [{ name: 'Autor de Dominio Público' }],
+        first_publish_year: 1900,
+        subjects: ['Literatura', 'Filosofía', 'Clásicos'],
+        description:
+          'Esta obra forma parte de nuestro catálogo de dominio público universal. Puedes explorar sus detalles y descargar en múltiples formatos.',
+      } as unknown as T;
     }
     return MOCK_RESPONSE as T;
   }

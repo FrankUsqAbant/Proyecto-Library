@@ -1,7 +1,6 @@
 import {
-  Twitter,
+  Facebook,
   Github,
-  Instagram,
   Linkedin,
   Youtube,
   LucideIcon,
@@ -21,6 +20,7 @@ export interface NavLink {
 export const NAV_LINKS: NavLink[] = [
   { label: 'Inicio', href: '/' },
   { label: 'Categorías', href: '/categorias' },
+  { label: 'Favoritos', href: '/favoritos' },
 ];
 
 export interface SocialLink {
@@ -31,22 +31,25 @@ export interface SocialLink {
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    icon: Linkedin,
-    href: 'https://linkedin.com/in/frankabanto',
-    label: 'LinkedIn',
-  },
-  {
     icon: Youtube,
     href: 'https://youtube.com/@frankabanto',
     label: 'YouTube',
   },
   {
-    icon: Instagram,
-    href: 'https://instagram.com/frank_abant',
-    label: 'Instagram',
+    icon: Facebook,
+    href: 'https://facebook.com',
+    label: 'Facebook',
   },
-  { icon: Twitter, href: 'https://x.com/FrankUsqAbanto', label: 'X' },
-  { icon: Github, href: 'https://github.com', label: 'GitHub' },
+  {
+    icon: Github,
+    href: 'https://github.com/FrankUsqAbant/Proyecto-Library',
+    label: 'GitHub',
+  },
+  {
+    icon: Linkedin,
+    href: 'https://linkedin.com/in/frankabanto',
+    label: 'LinkedIn',
+  },
 ];
 
 export const TOPICS = ['Todos', 'Fiction', 'Philosophy', 'History', 'Science', 'Classic', 'Poetry'];

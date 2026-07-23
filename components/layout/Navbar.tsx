@@ -9,7 +9,7 @@ import { useTheme } from './ThemeProvider';
 import { useI18n } from '@/hooks/useI18n';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_LINKS } from '@/lib/constants';
-import { searchUnifiedBooks, UnifiedBook } from '@/lib/api';
+import { searchUnifiedBooks, UnifiedBook, getBookSlug } from '@/lib/api';
 import { BookCover } from '../books/BookCover';
 import { Logo3D } from '@/components/ui/Logo3D';
 
@@ -43,6 +43,7 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [mounted, setMounted] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState<string | null>(null);
 
   // Search suggestions and voice state
   const [suggestions, setSuggestions] = useState<UnifiedBook[]>([]);
@@ -167,11 +168,11 @@ export function Navbar() {
       }}
       transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
       className={cn(
-        'fixed top-4 left-4 right-4 z-50 transition-all duration-500 rounded-[28px]',
+        'fixed top-4 left-4 right-4 z-50 transition-all duration-700 ease-in-out',
         isScrolled
-          ? 'py-3 bg-[var(--card)]/90 backdrop-blur-xl shadow-xl shadow-slate-200/20 dark:shadow-none border border-[var(--border)] px-6'
-          : 'py-5 bg-transparent border-transparent px-8',
-        mobileMenuOpen ? 'bg-[var(--card)] opacity-100 border-[var(--border)]' : ''
+          ? 'py-3 bg-[var(--card)]/70 backdrop-blur-2xl shadow-2xl shadow-violet-900/10 dark:shadow-black/50 border border-[var(--border)]/50 px-6 mx-auto max-w-4xl rounded-[32px] translate-y-2'
+          : 'py-6 bg-transparent border-transparent px-8 max-w-7xl mx-auto rounded-[28px]',
+        mobileMenuOpen ? 'bg-[var(--card)] opacity-100 border-[var(--border)] rounded-[28px]' : ''
       )}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -191,19 +192,37 @@ export function Navbar() {
         </Link>
 
         <div className="hidden md:flex items-center space-x-6">
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-2">
             {NAV_LINKS.map((link) => {
-              const label = link.label === 'Inicio' ? t('nav.library') : link.label;
+              const label = link.label === 'Inicio' 
+                ? t('nav.library') 
+                : link.label === 'Categorías'
+                  ? t('nav.categories') || 'Categories'
+                  : link.label === 'Favoritos'
+                    ? t('nav.favorites') || 'Favorites'
+                    : link.label;
+              const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.label}
                   href={link.href}
+                  onMouseEnter={() => setHoveredLink(link.label)}
+                  onMouseLeave={() => setHoveredLink(null)}
                   className={cn(
-                    'font-medium transition-colors text-sm',
-                    'text-[var(--foreground-sec)] hover:text-[var(--accent)]'
+                    'relative px-4 py-2 font-semibold text-sm transition-colors rounded-xl flex items-center justify-center',
+                    isActive
+                      ? 'text-[var(--accent)]'
+                      : 'text-[var(--foreground-sec)] hover:text-[var(--foreground)]'
                   )}
                 >
-                  <span suppressHydrationWarning>{label}</span>
+                  <span suppressHydrationWarning className="relative z-10">{label}</span>
+                  {hoveredLink === link.label && (
+                    <motion.div
+                      layoutId="navHoverBubble"
+                      className="absolute inset-0 bg-stone-100 dark:bg-stone-850 rounded-xl -z-10 border border-stone-200/50 dark:border-stone-800/40 shadow-inner"
+                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                    />
+                  )}
                 </Link>
               );
             })}
@@ -258,7 +277,7 @@ export function Navbar() {
                       {suggestions.map((book) => (
                         <Link
                           key={book.id}
-                          href={`/book/${encodeURIComponent(book.id)}`}
+                          href={`/book?id=${getBookSlug(book.id)}`}
                           className="flex items-center space-x-3 p-2 hover:bg-[var(--hover)] rounded-xl transition-all group"
                           onClick={() => setShowSuggestions(false)}
                         >
@@ -362,16 +381,25 @@ export function Navbar() {
             className="fixed inset-0 top-[76px] bg-[var(--background)] dark:bg-stone-950 z-40 md:hidden p-6 shadow-2xl"
           >
             <div className="flex flex-col space-y-6">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-xl font-medium flex items-center space-x-2 text-[var(--foreground)]"
-                >
-                  <span suppressHydrationWarning>{link.label}</span>
-                </Link>
-              ))}
+              {NAV_LINKS.map((link) => {
+                const label = link.label === 'Inicio' 
+                  ? t('nav.library') 
+                  : link.label === 'Categorías'
+                    ? t('nav.categories') || 'Categories'
+                    : link.label === 'Favoritos'
+                      ? t('nav.favorites') || 'Favorites'
+                      : link.label;
+                return (
+                  <Link
+                    key={link.label}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-xl font-medium flex items-center space-x-2 text-[var(--foreground)]"
+                  >
+                    <span suppressHydrationWarning>{label}</span>
+                  </Link>
+                );
+              })}
 
               <form
                 onSubmit={handleSearch}

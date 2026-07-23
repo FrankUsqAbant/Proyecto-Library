@@ -67,7 +67,9 @@ function ExplorarContent() {
             {!loading && (
               <div className="flex items-center space-x-2 text-sm font-medium text-[var(--muted)] border border-[var(--border)] px-4 py-2 rounded-full backdrop-blur-sm">
                 <BookIcon size={18} />
-                <span>{totalCount.toLocaleString()} {t('explore.found')}</span>
+                <span>
+                  {totalCount.toLocaleString()} {t('explore.found')}
+                </span>
               </div>
             )}
           </div>

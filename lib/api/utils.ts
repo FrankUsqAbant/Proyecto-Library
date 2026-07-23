@@ -28,7 +28,10 @@ export async function findGutendexByTitle(
       return (
         response.results.find((book: GutendexBook) => {
           const bookTitle = (book.title || '').toLowerCase().trim();
-          return bookTitle && (bookTitle.includes(normalizedQuery) || normalizedQuery.includes(bookTitle));
+          return (
+            bookTitle &&
+            (bookTitle.includes(normalizedQuery) || normalizedQuery.includes(bookTitle))
+          );
         }) || response.results[0]
       );
     }
@@ -42,11 +45,16 @@ export async function findGutendexByTitle(
  * Transforms cover URLs/IDs to lightweight WebP CDN URLs (wsrv.nl).
  * Reduces cover image payload from ~1MB to ~25KB.
  */
-export function getOptimizedCoverUrl(coverIdOrUrl: string | number | undefined): string | undefined {
+export function getOptimizedCoverUrl(
+  coverIdOrUrl: string | number | undefined
+): string | undefined {
   if (!coverIdOrUrl) return undefined;
 
   let rawUrl = '';
-  if (typeof coverIdOrUrl === 'number' || (!coverIdOrUrl.toString().startsWith('http') && !coverIdOrUrl.toString().startsWith('/'))) {
+  if (
+    typeof coverIdOrUrl === 'number' ||
+    (!coverIdOrUrl.toString().startsWith('http') && !coverIdOrUrl.toString().startsWith('/'))
+  ) {
     rawUrl = `https://covers.openlibrary.org/b/id/${coverIdOrUrl}-L.jpg`;
   } else {
     rawUrl = coverIdOrUrl.toString();
@@ -91,4 +99,3 @@ export function resolveBookId(slug: string): string {
   }
   return clean;
 }
-

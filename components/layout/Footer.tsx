@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { NAV_LINKS, SOCIAL_LINKS } from '@/lib/constants';
-import { Heart } from 'lucide-react';
+import { Heart, Mail } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { StudyBear } from '@/components/ui/StudyBear';
 import { motion } from 'framer-motion';
@@ -68,7 +68,17 @@ export function Footer() {
               &ldquo;{t('footer.description')}&rdquo;
             </p>
 
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3">
+              <motion.a
+                href="mailto:leyendoparapensar@gmail.com"
+                whileHover={{ y: -3, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 rounded-xl bg-[var(--background)] border border-[var(--border)] flex items-center justify-center text-[var(--muted)] hover:text-white hover:bg-[var(--accent)] transition-all shadow-sm"
+                title="Correo: leyendoparapensar@gmail.com"
+                aria-label="Enviar correo electrónico"
+              >
+                <Mail size={18} />
+              </motion.a>
               {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
                 <motion.a
                   key={label}
@@ -145,13 +155,13 @@ export function Footer() {
             </p>
             <div className="hidden sm:flex gap-6 uppercase tracking-[0.2em] text-[10px] font-black text-[var(--muted)]">
               <Link
-                href="#"
+                href="/privacidad"
                 className="hover:text-[var(--accent)] transition-all opacity-40 hover:opacity-100"
               >
                 {t('footer.privacy')}
               </Link>
               <Link
-                href="#"
+                href="/terminos"
                 className="hover:text-[var(--accent)] transition-all opacity-40 hover:opacity-100"
               >
                 {t('footer.terms')}

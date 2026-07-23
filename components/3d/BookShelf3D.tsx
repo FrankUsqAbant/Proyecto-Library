@@ -46,7 +46,7 @@ export function BookShelf3D({ books }: BookShelf3DProps) {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 className="group relative flex flex-col items-center cursor-pointer"
               >
-                <Link href={`/book/${slug}`} className="w-full flex flex-col items-center">
+                <Link href={`/book?id=${slug}`} className="w-full flex flex-col items-center">
                   {/* 3D Book Standing on Shelf */}
                   <div
                     style={{
@@ -55,7 +55,11 @@ export function BookShelf3D({ books }: BookShelf3DProps) {
                     }}
                     className="relative w-full aspect-[2/3] rounded-md shadow-2xl transition-all duration-500 group-hover:-translate-y-4 group-hover:rotate-0 group-hover:scale-105"
                   >
-                    <BookCover title={book.title} coverImage={book.coverImage} priority={index < 3} />
+                    <BookCover
+                      title={book.title}
+                      coverImage={book.coverImage}
+                      priority={index < 3}
+                    />
 
                     {/* 3D Book Spine Thickness */}
                     <div className="absolute top-0 bottom-0 left-0 w-3 bg-stone-900/60 z-20 pointer-events-none rounded-l-md" />

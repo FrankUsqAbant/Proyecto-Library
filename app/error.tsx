@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { RefreshCw, Home, AlertTriangle } from "lucide-react";
-import Link from "next/link";
-import { motion } from "framer-motion";
+import React, { useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { RefreshCw, Home, AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function ErrorPage({
   error,
@@ -15,7 +15,7 @@ export default function ErrorPage({
 }) {
   useEffect(() => {
     // Log error to an external service if needed
-    console.error("Global Error:", error);
+    console.error('Global Error:', error);
   }, [error]);
 
   return (
@@ -38,11 +38,11 @@ export default function ErrorPage({
             Algo dejó de rimar.
           </h1>
           <p className="text-xl text-[var(--muted)] font-serif italic leading-relaxed">
-            Hubo un error inesperado al procesar esta página. Es posible que el
-            libro que buscas esté temporalmente fuera de nuestro alcance.
+            Hubo un error inesperado al procesar esta página. Es posible que el libro que buscas
+            esté temporalmente fuera de nuestro alcance.
           </p>
           <p className="text-xs font-mono text-[var(--muted)]/60 uppercase tracking-widest pt-4">
-            ID de error: {error.digest || "DESCONOCIDO"}
+            ID de error: {error.digest || 'DESCONOCIDO'}
           </p>
         </div>
 

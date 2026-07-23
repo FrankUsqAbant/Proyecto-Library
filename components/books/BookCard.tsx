@@ -7,7 +7,7 @@ import { UnifiedBook, getBookSlug } from '@/lib/api';
 import { BookCover } from './BookCover';
 import { useI18n } from '@/hooks/useI18n';
 
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { DownloadModal } from '../downloads/DownloadModal';
 
 interface BookCardProps {
@@ -15,10 +15,34 @@ interface BookCardProps {
   priority?: boolean;
 }
 
+const MotionLink = motion(Link);
+
 export const BookCard = React.memo(function BookCard({ book, priority = false }: BookCardProps) {
   const { lang } = useI18n();
   const [isDownloadOpen, setIsDownloadOpen] = React.useState(false);
   const author = book.authors?.[0] || (lang === 'es' ? 'Autor desconocido' : 'Unknown author');
+
+  // 3D Tilt properties
+  const x = useMotionValue(0.5);
+  const y = useMotionValue(0.5);
+
+  const rotateX = useSpring(useTransform(y, [0, 1], [12, -12]), { stiffness: 250, damping: 20 });
+  const rotateY = useSpring(useTransform(x, [0, 1], [-12, 12]), { stiffness: 250, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    x.set(mouseX / width);
+    y.set(mouseY / height);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0.5);
+    y.set(0.5);
+  };
 
   const handleDownload = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -29,17 +53,14 @@ export const BookCard = React.memo(function BookCard({ book, priority = false }:
   const bookSlug = getBookSlug(book.id);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -8 }}
-      transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }} // smooth ease-in-out
-      className="h-full"
-    >
-      <Link
-        href={`/book/${bookSlug}`}
+    <div className="h-full" style={{ perspective: '1000px' }}>
+      <MotionLink
+        href={`/book?id=${bookSlug}`}
         aria-label={`Ver detalles de ${book.title}`}
-        className="group relative flex flex-col h-full bg-[var(--background-sec)] border border-[var(--border)] rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)]"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+        className="group relative flex flex-col h-full bg-[var(--background-sec)] border border-[var(--border)] rounded-[2rem] overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_rgba(124,58,237,0.12)] dark:hover:shadow-[0_20px_40px_rgba(124,58,237,0.35)]"
       >
         {/* Shadow glow on hover */}
         <div className="absolute inset-0 bg-gradient-to-br from-violet-500/0 to-fuchsia-500/0 group-hover:from-violet-500/5 group-hover:to-fuchsia-500/5 transition-all duration-500" />
@@ -112,7 +133,7 @@ export const BookCard = React.memo(function BookCard({ book, priority = false }:
             </div>
           </div>
         </div>
-      </Link>
+      </MotionLink>
 
       <DownloadModal
         isOpen={isDownloadOpen}
@@ -123,6 +144,6 @@ export const BookCard = React.memo(function BookCard({ book, priority = false }:
           downloadFormats: book.downloadFormats,
         }}
       />
-    </motion.div>
+    </div>
   );
 });

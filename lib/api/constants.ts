@@ -21,7 +21,7 @@ export const INSPIRATIONAL_QUOTES = [
 /**
  * Curated list of essential books for instant initial loading.
  */
-export const ESSENTIAL_BOOKS: UnifiedBook[] = [
+export const ESSENTIAL_BOOKS_ES: UnifiedBook[] = [
   {
     id: '/works/OL27448W',
     title: 'El ingenioso hidalgo Don Quijote de la Mancha',
@@ -182,3 +182,172 @@ export const ESSENTIAL_BOOKS: UnifiedBook[] = [
     },
   },
 ];
+
+export const ESSENTIAL_BOOKS_EN: UnifiedBook[] = [
+  {
+    id: '/works/OL27479W',
+    title: 'Pride and Prejudice',
+    authors: ['Jane Austen'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14605175-L.jpg',
+    publishYear: 1813,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/1342.epub.images',
+      pdf: 'https://www.gutenberg.org/ebooks/1342.pdf',
+    },
+  },
+  {
+    id: '/works/OL23919W',
+    title: "Alice's Adventures in Wonderland",
+    authors: ['Lewis Carroll'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14631627-L.jpg',
+    publishYear: 1865,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/11.epub.images',
+      pdf: 'https://www.gutenberg.org/ebooks/11.pdf',
+      html: 'https://www.gutenberg.org/files/11/11-h/11-h.htm',
+    },
+  },
+  {
+    id: '/works/OL54120W',
+    title: 'Frankenstein; Or, The Modern Prometheus',
+    authors: ['Mary Shelley'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14594611-L.jpg',
+    publishYear: 1818,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/84.epub.images',
+      pdf: 'https://www.gutenberg.org/ebooks/84.pdf',
+    },
+  },
+  {
+    id: '/works/OL1168083W',
+    title: 'A Study in Scarlet',
+    authors: ['Arthur Conan Doyle'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14415497-L.jpg',
+    publishYear: 1887,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/2852.epub.images',
+      pdf: 'https://www.gutenberg.org/ebooks/2852.pdf',
+    },
+  },
+  {
+    id: '/works/OL262758W',
+    title: 'Moby-Dick; or, The Whale',
+    authors: ['Herman Melville'],
+    coverImage: 'https://covers.openlibrary.org/b/id/12839958-L.jpg',
+    publishYear: 1851,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/2701.epub.images',
+      pdf: 'https://www.gutenberg.org/ebooks/2701.pdf',
+    },
+  },
+  {
+    id: '/works/OL45644W',
+    title: 'The Picture of Dorian Gray',
+    authors: ['Oscar Wilde'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14588825-L.jpg',
+    publishYear: 1890,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/174.epub.images',
+      pdf: 'https://www.gutenberg.org/ebooks/174.pdf',
+    },
+  },
+  {
+    id: '/works/OL1513W',
+    title: 'Romeo and Juliet',
+    authors: ['William Shakespeare'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14594615-L.jpg',
+    publishYear: 1597,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/1513.epub.images',
+    },
+  },
+  {
+    id: '/works/OL98W',
+    title: 'A Tale of Two Cities',
+    authors: ['Charles Dickens'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14603943-L.jpg',
+    publishYear: 1859,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/98.epub.images',
+      pdf: 'https://www.gutenberg.org/ebooks/98.pdf',
+    },
+  },
+  {
+    id: '/works/OL54005W',
+    title: 'The Adventures of Tom Sawyer',
+    authors: ['Mark Twain'],
+    coverImage: 'https://covers.openlibrary.org/b/id/12836261-L.jpg',
+    publishYear: 1876,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/74.epub.images',
+    },
+  },
+  {
+    id: '/works/OL74421W',
+    title: 'Dracula',
+    authors: ['Bram Stoker'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14588506-L.jpg',
+    publishYear: 1897,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/345.epub.images',
+    },
+  },
+  {
+    id: '/works/OL1032D',
+    title: 'Metamorphosis',
+    authors: ['Franz Kafka'],
+    coverImage: 'https://covers.openlibrary.org/b/id/12643501-L.jpg',
+    publishYear: 1915,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/5200.epub.images',
+      pdf: 'https://www.gutenberg.org/ebooks/5200.pdf',
+    },
+  },
+  {
+    id: '/works/OL95W',
+    title: 'Great Expectations',
+    authors: ['Charles Dickens'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14415497-L.jpg',
+    publishYear: 1861,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/1400.epub.images',
+    },
+  },
+  {
+    id: '/works/OL107297W',
+    title: 'The Odyssey',
+    authors: ['Homer'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14625765-L.jpg',
+    publishYear: -800,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/1727.epub.images',
+    },
+  },
+  {
+    id: '/works/OL1952W',
+    title: 'The Yellow Wallpaper',
+    authors: ['Charlotte Perkins Gilman'],
+    coverImage: 'https://covers.openlibrary.org/b/id/14357777-L.jpg',
+    publishYear: 1892,
+    source: 'curated',
+    downloadFormats: {
+      epub: 'https://www.gutenberg.org/ebooks/1952.epub.images',
+    },
+  },
+];
+
+export const ESSENTIAL_BOOKS = [...ESSENTIAL_BOOKS_ES, ...ESSENTIAL_BOOKS_EN];
+

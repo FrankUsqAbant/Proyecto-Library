@@ -84,7 +84,7 @@ export function BookGrid({
   }
 
   return (
-    <AnimatePresence mode="popLayout">
+    <div className="w-full">
       {books.length > 0 ? (
         <div className="space-y-12">
           <div className="flex items-center justify-between">
@@ -104,33 +104,18 @@ export function BookGrid({
             </span>
           </div>
 
-          <motion.div
-            variants={{
-              hidden: { opacity: 0 },
-              show: {
-                opacity: 1,
-                transition: {
-                  staggerChildren: 0.03,
-                },
-              },
-            }}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6"
-          >
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6">
             {books.map((book, index) => (
               <motion.div
                 key={`${book.id}-${index}`}
-                variants={{
-                  hidden: { opacity: 0, scale: 0.98 },
-                  show: { opacity: 1, scale: 1 },
-                }}
-                transition={{ duration: 0.4, ease: 'easeOut' }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: Math.min(index * 0.03, 0.3), ease: 'easeOut' }}
               >
                 <BookCard3D book={book} priority={index < 5} />
               </motion.div>
             ))}
-          </motion.div>
+          </div>
 
           {/* Infinite Scroll Trigger */}
           <div ref={loaderRef} className="flex flex-col items-center justify-center pt-20 pb-10">
@@ -140,7 +125,9 @@ export function BookGrid({
                   <>
                     <Loader2 className="w-10 h-10 text-violet-600 animate-spin" />
                     <p className="text-sm font-medium text-[var(--muted)] animate-pulse">
-                      {lang === 'es' ? 'Descubriendo más tesoros...' : 'Discovering more treasures...'}
+                      {lang === 'es'
+                        ? 'Descubriendo más tesoros...'
+                        : 'Discovering more treasures...'}
                     </p>
                   </>
                 ) : (
@@ -192,6 +179,6 @@ export function BookGrid({
           </div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </div>
   );
 }

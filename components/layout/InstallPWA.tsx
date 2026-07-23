@@ -1,12 +1,11 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { Download, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect } from 'react';
+import { Download, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function InstallPWA() {
-  const [deferredPrompt, setDeferredPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
@@ -15,24 +14,19 @@ export function InstallPWA() {
       setDeferredPrompt(e as BeforeInstallPromptEvent);
 
       // Check if already installed or banner was already shown in this "lifetime"
-      const isStandalone = window.matchMedia(
-        "(display-mode: standalone)",
-      ).matches;
-      const bannerShown = localStorage.getItem("pwa_banner_shown");
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+      const bannerShown = localStorage.getItem('pwa_banner_shown');
 
       if (!isStandalone && !bannerShown) {
         setShowBanner(true);
-        localStorage.setItem("pwa_banner_shown", "true");
+        localStorage.setItem('pwa_banner_shown', 'true');
       }
     };
 
-    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     return () => {
-      window.removeEventListener(
-        "beforeinstallprompt",
-        handleBeforeInstallPrompt,
-      );
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, []);
 
@@ -40,7 +34,7 @@ export function InstallPWA() {
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === "accepted") {
+    if (outcome === 'accepted') {
       setDeferredPrompt(null);
       setShowBanner(false);
     }
@@ -102,5 +96,5 @@ export function InstallPWA() {
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => void;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }

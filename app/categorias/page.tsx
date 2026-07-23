@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { CATEGORIES_DATA } from "@/lib/constants";
-import { useI18n } from "@/hooks/useI18n";
+import React from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { CATEGORIES_DATA } from '@/lib/constants';
+import { useI18n } from '@/hooks/useI18n';
 
 export default function CategoriasPage() {
   const { t } = useI18n();
@@ -14,10 +14,10 @@ export default function CategoriasPage() {
       <div className="max-w-7xl mx-auto">
         <header className="mb-16 text-center">
           <h1 className="text-4xl md:text-6xl font-serif font-bold text-[var(--foreground)] mb-4">
-            {t("categories.title")}
+            {t('categories.title')}
           </h1>
           <p className="text-[var(--muted)] text-lg max-w-2xl mx-auto italic font-serif">
-            {t("categories.subtitle")}
+            {t('categories.subtitle')}
           </p>
         </header>
 
@@ -30,7 +30,7 @@ export default function CategoriasPage() {
                 transition={{ delay: idx * 0.1 }}
                 whileHover={{
                   y: -5,
-                  boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1)",
+                  boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
                 }}
                 className="bg-[var(--card)] border border-[var(--border)] p-8 rounded-3xl group cursor-pointer transition-all hover:border-[var(--accent)]/30"
               >
@@ -43,7 +43,7 @@ export default function CategoriasPage() {
                   {t(`topic.${cat.name}`)}
                 </h3>
                 <p className="text-[var(--muted)] font-medium">
-                  {cat.count} {t("categories.available")}
+                  {cat.count} {t('categories.available')}
                 </p>
               </motion.div>
             </Link>

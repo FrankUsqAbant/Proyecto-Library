@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
-import { BookCardSkeleton } from "./BookCardSkeleton";
-import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { BookCardSkeleton } from './BookCardSkeleton';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BookOpen } from 'lucide-react';
 
 const LOADING_MESSAGES = [
-  "Explorando los estantes secretos...",
-  "Desempolvando clásicos olvidados...",
-  "Preparando tinta digital...",
-  "Consultando con los bibliotecarios...",
-  "Abriendo portales literarios...",
-  "Traduciendo sueños a palabras...",
+  'Explorando los estantes secretos...',
+  'Desempolvando clásicos olvidados...',
+  'Preparando tinta digital...',
+  'Consultando con los bibliotecarios...',
+  'Abriendo portales literarios...',
+  'Traduciendo sueños a palabras...',
 ];
 
 export function LoadingGrid() {
@@ -44,7 +44,7 @@ export function LoadingGrid() {
             <div className="absolute inset-0 bg-[var(--accent)]/20 blur-xl rounded-full animate-pulse" />
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
               className="relative bg-[var(--background)] p-4 rounded-2xl border border-[var(--border)] shadow-sm"
             >
               <BookOpen size={32} className="text-[var(--accent)]" />

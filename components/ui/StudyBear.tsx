@@ -1,12 +1,15 @@
-"use client";
+'use client';
 
-import React, { useEffect, useRef } from "react";
-import { motion, useSpring, useTransform } from "framer-motion";
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useSpring, useTransform } from 'framer-motion';
 
 export function StudyBear() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isWinking, setIsWinking] = useState(false);
+  const [heartBurst, setHeartBurst] = useState(false);
 
-  const springConfig = { damping: 25, stiffness: 120 };
+  // Mouse Tracking Physics Spring
+  const springConfig = { damping: 20, stiffness: 140 };
   const mouseX = useSpring(0, springConfig);
   const mouseY = useSpring(0, springConfig);
 
@@ -14,136 +17,249 @@ export function StudyBear() {
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      const x =
-        (e.clientX - (rect.left + rect.width / 2)) / (window.innerWidth / 2);
-      const y =
-        (e.clientY - (rect.top + rect.height / 2)) / (window.innerHeight / 2);
+      const x = (e.clientX - (rect.left + rect.width / 2)) / (window.innerWidth / 2);
+      const y = (e.clientY - (rect.top + rect.height / 2)) / (window.innerHeight / 2);
       mouseX.set(x * 12);
-      mouseY.set(y * 8);
+      mouseY.set(y * 10);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY]);
 
+  // Head and Eye Offsets
+  const headRotateX = useTransform(mouseY, [-10, 10], [6, -6]);
+  const headRotateY = useTransform(mouseX, [-12, 12], [-10, 10]);
   const eyeX = useTransform(mouseX, [-12, 12], [-3, 3]);
-  const eyeY = useTransform(mouseY, [-8, 8], [-2, 2]);
+  const eyeY = useTransform(mouseY, [-10, 10], [-2, 2]);
+
+  const handleClick = () => {
+    setIsWinking(true);
+    setHeartBurst(true);
+    setTimeout(() => setIsWinking(false), 800);
+    setTimeout(() => setHeartBurst(false), 1500);
+  };
 
   return (
     <div
       ref={containerRef}
-      className="relative w-64 h-64 flex items-center justify-center pointer-events-none select-none -translate-x-4"
-      style={{ perspective: "1000px" }}
+      onClick={handleClick}
+      className="relative w-64 h-64 flex items-center justify-center select-none cursor-pointer group"
     >
-      {/* --- THOUGHT CLOUD (Style: Thinking) --- */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: 15 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ type: "spring", delay: 0.4 }}
-        className="absolute -top-24 left-1/2 -translate-x-1/4 bg-white/95 dark:bg-stone-50 p-4 rounded-[40px] shadow-[0_15px_40px_rgba(0,0,0,0.1)] z-[100] border-2 border-violet-50/50 backdrop-blur-sm min-w-[180px]"
-      >
-        <p className="text-violet-500/80 font-serif italic text-base leading-tight text-center tracking-tight">
-          Leer para entender, <br />
-          pensar para <br />
-          <span className="text-orange-400 font-bold">ser libres...</span>
-        </p>
+      {/* Interactive Heart Burst Effect */}
+      {heartBurst && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5, y: 0 }}
+          animate={{ opacity: 1, scale: 1.4, y: -40 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8 }}
+          className="absolute -top-16 z-40 text-rose-500 font-bold text-lg flex items-center gap-1 bg-white/90 dark:bg-stone-900/90 px-3 py-1 rounded-full shadow-lg border border-rose-200"
+        >
+          ❤️ ¡Leamos juntos!
+        </motion.div>
+      )}
 
-        {/* Thought Bubbles (Circles) - Positions adjusted for the smaller size */}
-        <div className="absolute bottom-[-10px] left-8 w-4 h-4 bg-white border-2 border-violet-50/50 rounded-full" />
-        <div className="absolute bottom-[-24px] left-12 w-2.5 h-2.5 bg-white border-2 border-violet-50/50 rounded-full" />
-        <div className="absolute bottom-[-34px] left-15 w-1.5 h-1.5 bg-white border-2 border-violet-50/50 rounded-full" />
+      {/* Thought Bubble */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="absolute -top-12 left-1/2 -translate-x-1/2 bg-amber-50/95 dark:bg-stone-900/95 px-4 py-2 rounded-2xl shadow-lg border border-amber-900/20 z-30"
+      >
+        <p className="text-[11px] font-serif italic text-amber-900 dark:text-amber-200 font-bold whitespace-nowrap">
+          {isWinking ? '¡Guiño! 📖✨' : '“Un libro abierto es una mente que habla...”'}
+        </p>
       </motion.div>
 
-      {/* --- THE BEAR (CSS ART - Smaller & Cuter) --- */}
-      <motion.div
-        style={{
-          rotateX: mouseY,
-          rotateY: mouseX,
-          transformStyle: "preserve-3d",
-          filter:
-            "drop-shadow(0 0 0 6px white) drop-shadow(0 10px 25px rgba(0,0,0,0.12))",
-        }}
-        className="relative w-48 h-52 flex flex-col items-center pointer-events-auto"
+      {/* Alive SVG Bear */}
+      <motion.svg
+        width="220"
+        height="220"
+        viewBox="0 0 200 200"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        animate={{ y: [0, -4, 0] }}
+        transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+        className="relative z-10 filter drop-shadow-xl"
       >
-        {/* EARS */}
-        <div className="absolute -top-5 w-full flex justify-between px-4 z-0">
-          <div className="w-16 h-16 bg-[#fdf2e3] border-[2px] border-[#6b4e3d] rounded-full flex items-center justify-center">
-            <div className="w-9 h-9 bg-[#f4e4d0] rounded-full" />
-          </div>
-          <div className="w-16 h-16 bg-[#fdf2e3] border-[2px] border-[#6b4e3d] rounded-full flex items-center justify-center">
-            <div className="w-9 h-9 bg-[#f4e4d0] rounded-full" />
-          </div>
-        </div>
+        {/* Soft Ambient Shadow Base */}
+        <ellipse cx="100" cy="182" rx="70" ry="12" fill="#000000" fillOpacity="0.15" />
 
-        {/* HEAD */}
-        <div className="relative w-44 h-36 bg-[#fdf2e3] border-[2px] border-[#6b4e3d] rounded-[80px_80px_70px_70px] z-20 flex flex-col items-center pt-8 overflow-hidden">
-          {/* Eyes */}
-          <div className="flex justify-between w-24 mt-4">
-            <div className="w-3.5 h-3.5 bg-[#3d2b1f] rounded-full relative">
-              <motion.div
-                style={{ x: eyeX, y: eyeY }}
-                className="absolute w-1 h-1 bg-white rounded-full top-0.5 right-0.5"
-              />
-            </div>
-            <div className="w-3.5 h-3.5 bg-[#3d2b1f] rounded-full relative">
-              <motion.div
-                style={{ x: eyeX, y: eyeY }}
-                className="absolute w-1 h-1 bg-white rounded-full top-0.5 right-0.5"
-              />
-            </div>
-          </div>
+        {/* Desk Lamp Beam */}
+        <path d="M155 45L120 170H180L155 45Z" fill="url(#lamp-light)" opacity="0.4" />
 
-          {/* Blush */}
-          <div className="flex justify-between w-32 mt-0.5 opacity-40">
-            <div className="w-7 h-4 bg-[#ffb6a3] rounded-full blur-[3px]" />
-            <div className="w-7 h-4 bg-[#ffb6a3] rounded-full blur-[3px]" />
-          </div>
+        {/* Bear Body with Breathing Motion */}
+        <motion.path
+          d="M60 120C60 95 80 85 100 85C120 85 140 95 140 120C140 150 135 178 100 178C65 178 60 150 60 120Z"
+          fill="url(#bear-fur)"
+          animate={{ scale: [1, 1.015, 1] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Bear Chest/Belly */}
+        <ellipse cx="100" cy="138" rx="28" ry="24" fill="#fde68a" fillOpacity="0.4" />
+
+        {/* Interactive Dynamic Head Layer */}
+        <motion.g
+          style={{ rotateX: headRotateX, rotateY: headRotateY, originX: '100px', originY: '84px' }}
+        >
+          {/* Bear Ears (Wiggle on Hover) */}
+          <motion.g whileHover={{ rotate: [-2, 4, -2] }}>
+            <circle cx="72" cy="72" r="16" fill="url(#bear-fur)" />
+            <circle cx="72" cy="72" r="9" fill="#d97706" fillOpacity="0.5" />
+            <circle cx="128" cy="72" r="16" fill="url(#bear-fur)" />
+            <circle cx="128" cy="72" r="9" fill="#d97706" fillOpacity="0.5" />
+          </motion.g>
+
+          {/* Bear Head */}
+          <ellipse cx="100" cy="84" rx="36" ry="30" fill="url(#bear-fur)" />
 
           {/* Muzzle */}
-          <div className="w-22 h-16 bg-[#fffdfa] border border-[#6b4e3d]/10 rounded-full -mt-2 flex flex-col items-center justify-center">
-            <div className="w-7 h-4 bg-[#6b4e3d] rounded-full relative">
-              <div className="absolute top-0.5 left-1 w-2.5 h-1.5 bg-white/20 rounded-full" />
-            </div>
-            <div className="flex -mt-1 scale-125">
-              <div className="w-3.5 h-3.5 border-b-2 border-[#6b4e3d] rounded-full" />
-              <div className="w-3.5 h-3.5 border-b-2 border-[#6b4e3d] rounded-full" />
-            </div>
-          </div>
-        </div>
+          <ellipse cx="100" cy="92" rx="16" ry="12" fill="#fef3c7" />
 
-        {/* BODY */}
-        <div className="relative w-36 h-36 bg-[#fdf2e3] border-[2px] border-[#6b4e3d] -mt-10 rounded-[60px_60px_50px_50px] z-10 flex justify-center overflow-hidden">
-          <div className="absolute bottom-[-8px] w-28 h-28 bg-[#fffdfa] rounded-full opacity-80" />
-        </div>
+          {/* Nose */}
+          <ellipse cx="100" cy="87" rx="6" ry="4.5" fill="#451a03" />
 
-        {/* WAVING HAND (Paw) */}
-        <motion.div
-          animate={{ rotate: [-15, 15, -15], y: [0, -4, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          style={{ originX: "0%", originY: "50%" }}
-          className="absolute right-[-28px] top-10 w-24 h-24 z-30"
+          {/* Gentle Mouth */}
+          <path d="M96 93Q100 97 104 93" stroke="#451a03" strokeWidth="2" strokeLinecap="round" />
+
+          {/* Dynamic Pupil & Wink Eyes */}
+          {isWinking ? (
+            <>
+              {/* Wink Left Eye */}
+              <path d="M82 80Q87 84 92 80" stroke="#451a03" strokeWidth="3" strokeLinecap="round" />
+              {/* Open Right Eye */}
+              <path
+                d="M108 80Q113 76 118 80"
+                stroke="#451a03"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </>
+          ) : (
+            <>
+              {/* Left Eye */}
+              <g>
+                <path
+                  d="M82 80Q87 76 92 80"
+                  stroke="#451a03"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+                <motion.circle style={{ x: eyeX, y: eyeY }} cx="87" cy="81" r="2" fill="#451a03" />
+              </g>
+              {/* Right Eye */}
+              <g>
+                <path
+                  d="M108 80Q113 76 118 80"
+                  stroke="#451a03"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+                <motion.circle style={{ x: eyeX, y: eyeY }} cx="113" cy="81" r="2" fill="#451a03" />
+              </g>
+            </>
+          )}
+
+          {/* Reading Glasses */}
+          <circle cx="87" cy="80" r="9" stroke="#78350f" strokeWidth="2.2" fill="none" />
+          <circle cx="113" cy="80" r="9" stroke="#78350f" strokeWidth="2.2" fill="none" />
+          <line x1="96" y1="80" x2="104" y2="80" stroke="#78350f" strokeWidth="2.2" />
+        </motion.g>
+
+        {/* Waving Paw in Book */}
+        <motion.g
+          animate={isWinking ? { rotate: [-10, 15, -10] } : { rotate: [0, 4, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+          style={{ originX: '130px', originY: '140px' }}
         >
-          <div className="relative w-18 h-20 bg-[#fdf2e3] border-[2px] border-[#6b4e3d] rounded-[35px_35px_45px_45px] shadow-sm flex flex-col items-center justify-center p-2">
-            {/* Paw Fingers (Top Pads) */}
-            <div className="flex space-x-1.5 mb-1.5">
-              <div className="w-3 h-4 bg-[#ffb6a3]/50 rounded-full border border-[#6b4e3d]/10" />
-              <div className="w-3.5 h-4.5 bg-[#ffb6a3]/50 rounded-full border border-[#6b4e3d]/10 -mt-1" />
-              <div className="w-3 h-4 bg-[#ffb6a3]/50 rounded-full border border-[#6b4e3d]/10" />
-            </div>
-            {/* Main Palm Pad */}
-            <div className="w-10 h-8 bg-[#ffb6a3]/70 rounded-[40%_40%_50%_50%] border border-[#6b4e3d]/10" />
-          </div>
-        </motion.div>
+          {/* Open Book in Paws */}
+          <g transform="translate(68, 140)">
+            <path
+              d="M5 8C15 5 28 8 32 14V34C28 28 15 25 5 28V8Z"
+              fill="#fef3c7"
+              stroke="#d97706"
+              strokeWidth="1.5"
+            />
+            <path
+              d="M59 8C49 5 36 8 32 14V34C36 28 49 25 59 28V8Z"
+              fill="#fffbeb"
+              stroke="#d97706"
+              strokeWidth="1.5"
+            />
+            <line x1="32" y1="14" x2="32" y2="34" stroke="#78350f" strokeWidth="2" />
+            <line
+              x1="12"
+              y1="14"
+              x2="26"
+              y2="15"
+              stroke="#b45309"
+              strokeWidth="1.2"
+              opacity="0.6"
+            />
+            <line
+              x1="12"
+              y1="18"
+              x2="24"
+              y2="19"
+              stroke="#b45309"
+              strokeWidth="1.2"
+              opacity="0.6"
+            />
+            <line
+              x1="38"
+              y1="15"
+              x2="52"
+              y2="14"
+              stroke="#b45309"
+              strokeWidth="1.2"
+              opacity="0.6"
+            />
+            <line
+              x1="38"
+              y1="19"
+              x2="50"
+              y2="18"
+              stroke="#b45309"
+              strokeWidth="1.2"
+              opacity="0.6"
+            />
+          </g>
+        </motion.g>
 
-        {/* LEFT ARM */}
-        <div className="absolute left-[-12px] top-24 w-12 h-20 bg-[#fdf2e3] border-[2px] border-[#6b4e3d] rounded-[50px_10px_10px_50px] z-0 -rotate-10" />
+        {/* Cozy Lamp */}
+        <path d="M152 40L145 160" stroke="#78350f" strokeWidth="3" strokeLinecap="round" />
+        <path d="M140 160H164" stroke="#78350f" strokeWidth="4" strokeLinecap="round" />
+        <path d="M140 40L152 28L164 40H140Z" fill="#f59e0b" />
+        <circle cx="152" cy="42" r="4" fill="#fef08a" />
 
-        {/* LEGS */}
-        <div className="absolute bottom-[-10px] w-full flex justify-center space-x-6 z-0">
-          <div className="w-16 h-16 bg-[#fdf2e3] border-[2px] border-[#6b4e3d] rounded-[15px_15px_25px_25px]" />
-          <div className="w-16 h-16 bg-[#fdf2e3] border-[2px] border-[#6b4e3d] rounded-[15px_15px_25px_25px]" />
-        </div>
-      </motion.div>
+        {/* Gradients */}
+        <defs>
+          <linearGradient
+            id="bear-fur"
+            x1="60"
+            y1="60"
+            x2="140"
+            y2="175"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#b45309" />
+            <stop offset="0.7" stopColor="#78350f" />
+            <stop offset="1" stopColor="#451a03" />
+          </linearGradient>
+          <linearGradient
+            id="lamp-light"
+            x1="152"
+            y1="40"
+            x2="100"
+            y2="170"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#fbbf24" stopOpacity="0.8" />
+            <stop offset="1" stopColor="#fbbf24" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+      </motion.svg>
     </div>
   );
 }

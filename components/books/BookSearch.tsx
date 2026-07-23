@@ -22,13 +22,56 @@ const sanitizeSearch = (term: string) => {
 };
 
 export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchProps) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [isListening, setIsListening] = useState(false);
   const [suggestions, setSuggestions] = useState<UnifiedBook[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const [isMac, setIsMac] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+
+  const placeholders = lang === 'es' ? [
+    "Busca 'El Quijote'...",
+    "Busca 'La Metamorfosis'...",
+    "Busca por autor como 'Cervantes'...",
+    "Busca por tema como 'Filosofía'...",
+    "Busca 'El Hobbit'..."
+  ] : [
+    "Search 'Pride and Prejudice'...",
+    "Search 'Frankenstein'...",
+    "Search by author like 'Shakespeare'...",
+    "Search by topic like 'Philosophy'...",
+    "Search 'Alice in Wonderland'..."
+  ];
+
+  // Rotate placeholders
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % placeholders.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [placeholders.length]);
+
+  // Detect OS for shortcut
+  useEffect(() => {
+    setIsMac(navigator.platform.toUpperCase().indexOf('MAC') >= 0);
+  }, []);
+
+  // Shortcut to focus input (Ctrl+K or Cmd+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -86,7 +129,7 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
     }
 
     const recognition = new Recognition();
-    recognition.lang = 'es-ES';
+    recognition.lang = lang === 'es' ? 'es-ES' : 'en-US';
     recognition.interimResults = false;
 
     recognition.onstart = () => setIsListening(true);
@@ -129,13 +172,14 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
         <h3 className="text-xl md:text-2xl font-serif font-bold text-[var(--foreground)]">
           {t('home.title')}
         </h3>
-        <p className="text-[var(--muted)] text-sm md:text-base italic">
-          {t('home.subtitle')}
-        </p>
+        <p className="text-[var(--muted)] text-sm md:text-base italic">{t('home.subtitle')}</p>
       </div>
 
       <div className="relative flex flex-col md:flex-row gap-4 w-full">
         <div className="relative flex-grow group">
+          {/* Neon border glow ring */}
+          <div className="absolute -inset-[1px] bg-gradient-to-r from-violet-500 via-fuchsia-500 to-orange-500 rounded-xl opacity-0 group-focus-within:opacity-100 blur-[3px] transition-all duration-500 pointer-events-none" />
+          
           <Search
             className={cn(
               'absolute left-4 top-1/2 -translate-y-1/2 transition-colors z-10',
@@ -144,10 +188,17 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
             size={20}
           />
           <Input
-            placeholder={t('search.placeholder')}
-            className="pl-12 pr-24 h-14 text-lg shadow-sm border-[var(--border)] bg-[var(--background-sec)] text-[var(--foreground)] rounded-xl focus:ring-2 focus:ring-violet-500 transition-all backdrop-blur-sm placeholder:text-[var(--muted)]"
+            ref={inputRef}
+            placeholder={placeholders[placeholderIndex]}
+            className="pl-12 pr-28 h-14 text-lg shadow-sm border-[var(--border)] bg-[var(--background-sec)] text-[var(--foreground)] rounded-xl focus:ring-0 focus:border-transparent transition-all backdrop-blur-sm placeholder:text-[var(--muted)] relative z-0"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value;
+              setSearchTerm(val);
+              if (val === '') {
+                onSearch('');
+              }
+            }}
             onFocus={() => searchTerm.length >= 3 && setShowSuggestions(true)}
           />
 
@@ -159,12 +210,17 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
                   setSearchTerm('');
                   setSuggestions([]);
                   setShowSuggestions(false);
+                  onSearch('');
                 }}
                 className="p-1 text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
               >
                 <X size={18} />
               </button>
             )}
+
+            <kbd className="hidden sm:inline-flex items-center gap-0.5 h-5 select-none pointer-events-none rounded border border-[var(--border)] bg-[var(--background)] px-1.5 font-mono text-[10px] font-medium text-[var(--muted)] shadow-sm">
+              <span>{isMac ? '⌘' : 'Ctrl'}</span><span>K</span>
+            </kbd>
 
             <div className="w-px h-6 bg-[var(--border)] mx-2" />
 
@@ -205,7 +261,7 @@ export function BookSearch({ searchTerm, setSearchTerm, onSearch }: BookSearchPr
                     {suggestions.map((book) => (
                       <Link
                         key={book.id}
-                        href={`/book/${getBookSlug(book.id)}`}
+                        href={`/book?id=${getBookSlug(book.id)}`}
                         className="flex items-center space-x-4 p-3 hover:bg-[var(--hover)] rounded-xl transition-all group"
                         onClick={() => setShowSuggestions(false)}
                         onMouseEnter={() => {

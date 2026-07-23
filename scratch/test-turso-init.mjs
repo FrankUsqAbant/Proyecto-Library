@@ -65,7 +65,10 @@ async function testConnection() {
     `);
 
     const result = await client.execute("SELECT name FROM sqlite_master WHERE type='table';");
-    console.log('✅ Connected to Turso DB successfully! Tables in database:', result.rows.map(r => r.name));
+    console.log(
+      '✅ Connected to Turso DB successfully! Tables in database:',
+      result.rows.map((r) => r.name)
+    );
   } catch (error) {
     console.error('❌ Connection error:', error);
   }

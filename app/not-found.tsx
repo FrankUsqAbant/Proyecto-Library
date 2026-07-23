@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { Search, Home, ArrowLeft } from "lucide-react";
-import Link from "next/link";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { useI18n } from "@/hooks/useI18n";
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Search, Home, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { useI18n } from '@/hooks/useI18n';
 
 export default function NotFound() {
   const router = useRouter();
@@ -38,10 +38,10 @@ export default function NotFound() {
 
         <div className="space-y-4">
           <h2 className="text-3xl md:text-4xl font-serif font-bold text-[var(--foreground)]">
-            {t("not_found.title")}
+            {t('not_found.title')}
           </h2>
           <p className="text-xl text-[var(--muted)] font-serif italic max-w-md mx-auto">
-            {t("not_found.desc")}
+            {t('not_found.desc')}
           </p>
         </div>
 
@@ -51,13 +51,13 @@ export default function NotFound() {
             className="w-full sm:w-auto flex items-center justify-center space-x-2 px-8 h-14 rounded-2xl border border-[var(--border)] font-bold text-[var(--muted)] hover:text-[var(--foreground)] hover:bg-[var(--hover)] transition-colors"
           >
             <ArrowLeft size={20} />
-            <span>{t("not_found.back")}</span>
+            <span>{t('not_found.back')}</span>
           </button>
 
           <Link href="/" className="w-full sm:w-auto">
             <Button className="w-full px-12 h-14 rounded-2xl bg-[var(--accent)] hover:bg-[var(--accent)]/90 font-bold space-x-2 shadow-lg shadow-violet-200 dark:shadow-none">
               <Home size={20} />
-              <span>{t("not_found.explore")}</span>
+              <span>{t('not_found.explore')}</span>
             </Button>
           </Link>
         </div>

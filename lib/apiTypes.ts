@@ -60,5 +60,5 @@ export interface UnifiedBook {
     html?: string;
     plainText?: string;
   };
-  source: 'openlibrary' | 'gutendex' | 'hybrid' | 'curated';
+  source: 'openlibrary' | 'gutendex' | 'hybrid' | 'curated' | 'mock';
 }

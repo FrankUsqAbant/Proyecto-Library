@@ -316,7 +316,7 @@ npm install canvas-confetti
 `components/layout/FloatingDonateButton.tsx` (línea 38)
 
 ```tsx
-className = "... bg-gradient-to-br from-violet-600 to-purple-600 ...";
+className = '... bg-gradient-to-br from-violet-600 to-purple-600 ...';
 ```
 
 ### **Agregar más frases literarias:**
@@ -325,7 +325,7 @@ className = "... bg-gradient-to-br from-violet-600 to-purple-600 ...";
 
 ```typescript
 const literaryQuotes = [
-  { quote: "Tu nueva frase", author: "Autor" },
+  { quote: 'Tu nueva frase', author: 'Autor' },
   // ...
 ];
 ```

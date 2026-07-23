@@ -20,7 +20,8 @@ import { sanitizeBookContent, sanitizeText } from '../lib/security/sanitize';
 
 describe('Security & XSS Sanitization Suite', () => {
   it('should remove malicious script tags from HTML content', () => {
-    const maliciousHtml = '<div><h1>Don Quijote</h1><script>alert("XSS Attack!");</script><p>Capítulo 1</p></div>';
+    const maliciousHtml =
+      '<div><h1>Don Quijote</h1><script>alert("XSS Attack!");</script><p>Capítulo 1</p></div>';
     const cleanHtml = sanitizeBookContent(maliciousHtml);
     expect(cleanHtml).not.toContain('<script>');
     expect(cleanHtml).not.toContain('alert');
@@ -29,7 +30,8 @@ describe('Security & XSS Sanitization Suite', () => {
   });
 
   it('should strip inline event handlers like onerror and onload', () => {
-    const maliciousHtml = '<img src="invalid.jpg" onerror="alert(1)" /><a href="#" onclick="doBadThing()">Click</a>';
+    const maliciousHtml =
+      '<img src="invalid.jpg" onerror="alert(1)" /><a href="#" onclick="doBadThing()">Click</a>';
     const cleanHtml = sanitizeBookContent(maliciousHtml);
     expect(cleanHtml).not.toContain('onerror');
     expect(cleanHtml).not.toContain('onclick');
@@ -37,14 +39,16 @@ describe('Security & XSS Sanitization Suite', () => {
   });
 
   it('should strip dangerous iframes and javascript: URLs', () => {
-    const maliciousHtml = '<iframe src="http://evil.com"></iframe><a href="javascript:stealCookies()">Link</a>';
+    const maliciousHtml =
+      '<iframe src="http://evil.com"></iframe><a href="javascript:stealCookies()">Link</a>';
     const cleanHtml = sanitizeBookContent(maliciousHtml);
     expect(cleanHtml).not.toContain('<iframe');
     expect(cleanHtml).not.toContain('javascript:stealCookies');
   });
 
   it('should preserve safe formatting tags like p, em, strong, h1, h2', () => {
-    const safeHtml = '<article><h1>Título</h1><p>Texto <strong>negrita</strong> y <em>cursiva</em>.</p></article>';
+    const safeHtml =
+      '<article><h1>Título</h1><p>Texto <strong>negrita</strong> y <em>cursiva</em>.</p></article>';
     const cleanHtml = sanitizeBookContent(safeHtml);
     expect(cleanHtml).toContain('<h1>Título</h1>');
     expect(cleanHtml).toContain('<strong>negrita</strong>');

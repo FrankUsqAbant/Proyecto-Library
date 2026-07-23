@@ -9,7 +9,12 @@ describe('Turso DB Edge Storage Suite', () => {
   it('should save and retrieve favorites in Turso DB client', async () => {
     const testBookId = 'test-book-' + Date.now();
     try {
-      await addFavorite(testBookId, 'Libro de Prueba', 'Autor de Prueba', 'https://example.com/cover.webp');
+      await addFavorite(
+        testBookId,
+        'Libro de Prueba',
+        'Autor de Prueba',
+        'https://example.com/cover.webp'
+      );
       const favorites = await getFavorites();
       expect(Array.isArray(favorites)).toBe(true);
       const isFav = await isFavorite(testBookId);
