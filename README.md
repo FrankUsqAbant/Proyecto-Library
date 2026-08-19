@@ -19,7 +19,7 @@
   <br />
 
   <a href="https://frankusqabant.github.io/Proyecto-Library/">
-    <img src="public/preview-library.webp" alt="Vista Previa de Leer es Pensar" width="900" style="border-radius: 14px; border: 1px solid rgba(217, 119, 6, 0.35); box-shadow: 0 16px 45px rgba(0,0,0,0.6);" />
+    <img src="public/preview-zen-library.webp" alt="Vista Previa de Leer es Pensar" width="900" style="border-radius: 14px; border: 1px solid rgba(217, 119, 6, 0.35); box-shadow: 0 16px 45px rgba(0,0,0,0.6);" />
   </a>
 
   <br><br>
