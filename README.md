@@ -66,23 +66,11 @@ Proyecto-Library/
 
 ---
 
-## 🚀 Instalación y Ejecución Local
+## 🌐 Acceso al Proyecto en Producción
 
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/FrankUsqAbant/Proyecto-Library.git
+El proyecto se encuentra alojado y disponible públicamente en **GitHub Pages**:
 
-# 2. Entrar a la carpeta
-cd Proyecto-Library
-
-# 3. Instalar dependencias
-npm install --legacy-peer-deps
-
-# 4. Iniciar servidor local
-npm run dev
-```
-
-Abre tu navegador en: 👉 **[http://localhost:3000](http://localhost:3000)**
+👉 **[https://frankusqabant.github.io/Proyecto-Library/](https://frankusqabant.github.io/Proyecto-Library/)**
 
 ---
 
