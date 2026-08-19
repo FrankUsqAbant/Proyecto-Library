@@ -1,11 +1,32 @@
-@import 'tailwindcss';
+:root {
+  /* Modo Claro */
+  --background: #ffffff;
+  --background-sec: #f5f7fa;
+  --card: rgba(255, 255, 255, 0.9);
+  --foreground: #1a1a1a;
+  --foreground-sec: #525252;
+  --muted: #737373;
+  --border: #e5e7eb;
+  --accent: #7c3aed;
+  --accent-soft: rgba(124, 58, 237, 0.08);
+  --hover: #f3f4f6;
+  color-scheme: light;
+}
 
-@import '../styles/variables.css';
-
-/* 
-  DESIGN SYSTEM: Zen Minimalist
-  Tokens imported from ../styles/variables.css
-*/
+.dark {
+  /* Modo Oscuro */
+  --background: #141210;
+  --background-sec: #1e1b18;
+  --card: rgba(30, 27, 24, 0.85);
+  --foreground: #f5f2eb;
+  --foreground-sec: #d6cfc7;
+  --muted: #8c827a;
+  --border: rgba(180, 140, 100, 0.18);
+  --accent: #d97706;
+  --accent-soft: rgba(217, 119, 6, 0.12);
+  --hover: rgba(255, 255, 255, 0.06);
+  color-scheme: dark;
+}
 
 /* Base Styles */
 body {
